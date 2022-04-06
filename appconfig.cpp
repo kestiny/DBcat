@@ -2,6 +2,8 @@
 #include <QSqlQuery>
 #include <QVariant>
 #include <QSqlError>
+#include <QStandardPaths>
+#include <QDir>
 
 bool AppConfig::addHost(HostInfo info)
 {
@@ -91,7 +93,19 @@ QString AppConfig::decrypt(const QByteArray &text)
     return  QByteArray::fromBase64(bytes).data();
 }
 
+QString AppConfig::configFile(const QString &name)
+{
+    return QString("%1/DBcat/%2").arg(_configDir, name);
+}
+
+QString AppConfig::documentFile(const QString &name)
+{
+    return QString("%1/DBcat/%2").arg(_docDir, name);
+}
+
 AppConfig::AppConfig()
+    : _configDir{QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)}
+    , _docDir{QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)}
 {
 
 }
@@ -103,8 +117,20 @@ AppConfig::~AppConfig()
 
 QSqlQuery AppConfig::getQuery()
 {
+    if(!QSqlDatabase::contains(configFile("app.cfg")))
+    {
+        initDB();
+    }
+    return QSqlQuery{QSqlDatabase::database(configFile("app.cfg"))};
+}
+
+void AppConfig::initDB()
+{
     auto db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("app.cfg");
+    db.setDatabaseName(configFile("app.cfg"));
     db.open();
-    return QSqlQuery{db};
+    auto result =  QSqlQuery{db};
+    result.exec("CREATE TABLE IF NOT EXISTS hostInfo(id integer primary key autoincrement,"
+                "name varchar(255),host varchar(64),port varchar(12),"
+                "userName varchar(255),password varchar(256),sqlType varchar(12))");
 }

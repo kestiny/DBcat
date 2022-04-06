@@ -10,7 +10,7 @@ public:
     SqlEditor(QWidget *parent = nullptr);
     ~SqlEditor();
 
-    void initEditorText(const QString& fileName);
+    void initEditorText();
     void appendText(const QString& text);
     QString currentSelection();
     QString currentSelectionSqlStatement();
@@ -23,7 +23,6 @@ private:
     QString preprocessingSql();
 
 private:
-    QString _strFileName;
     CommentHighlighter *_highligter;
 };
 

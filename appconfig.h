@@ -19,14 +19,19 @@ public:
     QString lastError() { return _strError; }
     QByteArray encrypt(const QString& text);
     QString decrypt(const QByteArray& text);
+    QString configFile(const QString &name);
+    QString documentFile(const QString &name);
 
 private:
     AppConfig();
     ~AppConfig();
     QSqlQuery getQuery();
+    void initDB();
 
 private:
     QString _strError;
+    QString _configDir;
+    QString _docDir;
 };
 
 #endif // APPCONFIG_H

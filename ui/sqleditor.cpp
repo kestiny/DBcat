@@ -4,10 +4,10 @@
 #include <QShortcut>
 #include <QPlainTextEdit>
 #include "regexpconstexpr.h"
+#include "appconfig.h"
 
 SqlEditor::SqlEditor(QWidget *parent)
-    : CodeEditor(parent),
-      _strFileName{}
+    : CodeEditor(parent)
 {
     _highligter = new CommentHighlighter(document());
     auto shortcut = QShortcut(QKeySequence("Ctrl+S"), this);
@@ -20,13 +20,13 @@ SqlEditor::~SqlEditor()
     slotSaveEditorText();
 }
 
-void SqlEditor::initEditorText(const QString &fileName)
+void SqlEditor::initEditorText()
 {
+    auto fileName = AppConfig::instance().configFile("content");
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
 
-    _strFileName = fileName;
     setPlainText(file.readAll());
     file.close();
     moveCursor(QTextCursor::End);
@@ -50,7 +50,7 @@ QString SqlEditor::currentSelectionSqlStatement()
 
 void SqlEditor::slotSaveEditorText()
 {
-    QFile file(_strFileName);
+    QFile file(AppConfig::instance().configFile("content"));
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
         return;
 

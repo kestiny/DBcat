@@ -14,7 +14,7 @@ DBcat::DBcat(QWidget *parent)
     ui->pushButton_2->hide();
     auto oper = new MysqlOperator{};
     ui->hostWidget->initDatabseOperator(oper, ui->sqlControll, ui->sqlEdit);
-    ui->sqlEdit->initEditorText("content");
+    ui->sqlEdit->initEditorText();
     ui->sqlControll->initUi(oper, ui->sqlEdit, ui->textEditMessage);
 
     connect(ui->execButton, &QPushButton::clicked, this, &DBcat::slotExec);

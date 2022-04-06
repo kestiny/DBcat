@@ -276,6 +276,7 @@ void HostTreeWidget::slotOpenCat(bool)
             setItemIcon(item, NodeType::DATABASE, "close");
             pItem->addChild(item);
         }
+        _resultControll->setMessage(tr("connect server:%1").arg(pItem->text(0)));
         pItem->setExpanded(true);
     }
 }
