@@ -92,10 +92,7 @@ bool SqlResultControll::doExec(int id, Database database)
 
     if(!strSql.isEmpty() && query->exec(strSql))
     {
-        SyntaxParser parser{};
-        parser.parse(strSql);
-
-        if(parser.sqlCommand().compare("SELECT") == 0)
+        if(query->size() > 0)
         {
             if(_resultModel == nullptr)
             {
