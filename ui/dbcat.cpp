@@ -20,6 +20,15 @@ DBcat::DBcat(QWidget *parent)
     ui->sqlEdit->initEditorText();
     ui->sqlControll->initUi(oper, ui->sqlEdit, ui->textEditMessage);
 
+    ui->pushButtonPre->setFont(AppConfig::instance().iconFont(10));
+    ui->pushButtonPre->setText(QChar(0xf062));
+    ui->pushButtonNext->setFont(AppConfig::instance().iconFont(10));
+    ui->pushButtonNext->setText(QChar(0xf063));
+    ui->pushButtonClose->setFont(AppConfig::instance().iconFont(12));
+    ui->pushButtonClose->setText(QChar(0xf00d));
+    ui->execButton->setFont(AppConfig::instance().iconFont(16));
+    ui->execButton->setText(QChar(0xf04b));
+
     connect(ui->execButton, &QPushButton::clicked, this, &DBcat::slotExec);
     connect(ui->pushButtonClose, &QPushButton::clicked, this, [&](){ui->widgetSearch->hide();});
     connect(ui->lineEdit, &QLineEdit::textEdited, this, &DBcat::slotSearchText);

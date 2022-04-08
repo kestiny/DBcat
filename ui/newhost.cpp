@@ -18,6 +18,9 @@ NewHost::NewHost(QWidget *parent)
     ui->pushButtonOk->hide();
     ui->pushButtonCancel->hide();
 
+    ui->pushButtonClose->setFont(AppConfig::instance().iconFont(16));
+    ui->pushButtonClose->setText(QChar(0xf00d));
+
     connect(ui->pushButtonClose, &QPushButton::clicked, this, &NewHost::slotClose);
     connect(ui->pushButtonMysql, &QPushButton::clicked, this, &NewHost::slotCatMysql);
     connect(ui->pushButtonSqlite, &QPushButton::clicked, this, &NewHost::slotCatSqlite);

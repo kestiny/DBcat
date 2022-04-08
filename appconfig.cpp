@@ -4,6 +4,7 @@
 #include <QSqlError>
 #include <QStandardPaths>
 #include <QDir>
+#include <QFontDatabase>
 
 bool AppConfig::addHost(HostInfo info)
 {
@@ -103,11 +104,18 @@ QString AppConfig::documentFile(const QString &name)
     return QString("%1/DBcat/%2").arg(_docDir, name);
 }
 
+QFont AppConfig::iconFont(int size)
+{
+    _iconFont.setPointSize(size);
+    return _iconFont;
+}
+
 AppConfig::AppConfig()
     : _configDir{QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)}
     , _docDir{QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)}
 {
-
+    int fontId = QFontDatabase::addApplicationFont(":/image/fontawesome-webfont.ttf");
+    _iconFont.setFamily(QFontDatabase::applicationFontFamilies(fontId).front());
 }
 
 AppConfig::~AppConfig()
