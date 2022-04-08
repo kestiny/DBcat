@@ -1,9 +1,15 @@
 #ifndef HOSTTREEWIDGET_H
 #define HOSTTREEWIDGET_H
+
 #include <QTreeWidget>
 #include <QMenu>
-#include "operation/idboperator.h"
-#include "sqlresultcontroll.h"
+#include "dbtype.h"
+
+QT_BEGIN_NAMESPACE
+class SqlResultControll;
+class IDBOperator;
+class SqlEditor;
+QT_END_NAMESPACE
 
 class HostTreeWidget : public QTreeWidget
 {

@@ -1,13 +1,19 @@
 #include "hosttreewidget.h"
 #include "appconfig.h"
 #include "newhost.h"
+#include "operation/idboperator.h"
+#include "sqlresultcontroll.h"
 #include <QSqlQuery>
 #include "messagebox.h"
 
 HostTreeWidget::HostTreeWidget(QWidget *parent/* = nullptr*/)
-    :QTreeWidget{parent}, _currentHostId{-1}, _currentDatabase{""}
+    :QTreeWidget{parent}
+    , _currentHostId{-1}
+    , _currentDatabase{""}
 {
-    setExpandsOnDoubleClick(false);
+    setIndentation(indentation() / 2);
+    setExpandsOnDoubleClick(true);
+    setColumnCount(1);
 
     initHostTree();
 
@@ -226,7 +232,6 @@ void HostTreeWidget::slotDoubleClicked(QTreeWidgetItem *item, int)
     case NodeType::NIL:
         break;
     }
-    item->setExpanded(!item->isExpanded());
 }
 
 void HostTreeWidget::slotItemChanged(QTreeWidgetItem *item, int)
@@ -277,7 +282,6 @@ void HostTreeWidget::slotOpenCat(bool)
             pItem->addChild(item);
         }
         _resultControll->setMessage(tr("connect server:%1").arg(pItem->text(0)));
-        pItem->setExpanded(true);
     }
 }
 
@@ -316,7 +320,6 @@ void HostTreeWidget::slotOpenDB(bool)
         // init table
         initTableTree(pItem, _currentHostId, _currentDatabase);
         setItemIcon(pItem, NodeType::DATABASE, "open");
-        pItem->setExpanded(true);
         _resultControll->setMessage(_dbOperator->lastExecMsg());
     }
 }

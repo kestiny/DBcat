@@ -1,10 +1,10 @@
 #ifndef DBCAT_H
 #define DBCAT_H
 #include <QMainWindow>
-#include <QTranslator>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class DBcat; }
+class QTreeWidgetItem;
 QT_END_NAMESPACE
 
 class DBcat : public QMainWindow
@@ -17,11 +17,22 @@ public:
 
     void initWidgetSize();
 
+protected:
+    virtual void keyPressEvent(QKeyEvent *event);
+
+private:
+    void searchItems(const QString& text);
+    void preSearchItem();
+    void nextSearchItem();
+
 private slots:
     void slotLoadStyleSheet(const QString& file);
     void slotExec();
+    void slotSearchText(const QString &text);
 
 private:
     Ui::DBcat *ui;
+    QList<QTreeWidgetItem*> _lastSearchItems;
+    int _searchIndex;
 };
 #endif // DBCAT_H

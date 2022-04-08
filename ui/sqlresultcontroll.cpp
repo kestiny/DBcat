@@ -92,7 +92,7 @@ bool SqlResultControll::doExec(int id, Database database)
 
     if(!strSql.isEmpty() && query->exec(strSql))
     {
-        if(query->size() > 0)
+        if(query->isSelect())
         {
             if(_resultModel == nullptr)
             {
