@@ -90,6 +90,7 @@ void DBcat::keyPressEvent(QKeyEvent *event)
             &&  event->modifiers() == Qt::ControlModifier)
     {
         ui->widgetSearch->show();
+        ui->lineEdit->setFocus();
     }
     QWidget::keyPressEvent(event);
 }

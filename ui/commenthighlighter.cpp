@@ -89,7 +89,8 @@ CommentHighlighter::CommentHighlighter(QTextDocument *parent)
             QStringLiteral("\\bUPDATE\\b"),
             QStringLiteral("\\bVALUES\\b"),
             QStringLiteral("\\bVIEW\\b"),
-            QStringLiteral("\\bWHERE\\b")
+            QStringLiteral("\\bWHERE\\b"),
+        QStringLiteral("\\bSHOW\\b")
         };
     for (const QString &pattern : keywordPatterns) {
         HighlightRule rule;

@@ -106,6 +106,14 @@ bool SqlResultControll::doExec(int id, Database database)
             setCurrentIndex(1);
             _resultModel->setQuery(*query);
         }
+        else
+        {
+            SyntaxParser parser;
+            parser.parse(strSql);
+            setMessage(tr("execute %1 command, affected %2 rows.")
+                       .arg(parser.sqlCommand(), QString::number(query->numRowsAffected())));
+            setCurrentIndex(0);
+        }
         return true;
     }
     else
