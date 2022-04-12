@@ -36,7 +36,7 @@ public:
 private slots:
    void showContextMenu(const QPoint &);
    void slotDoubleClicked(QTreeWidgetItem *, int);
-   void slotItemChanged(QTreeWidgetItem *, int);
+   void slotItemChanged(QTreeWidgetItem *currItem, QTreeWidgetItem*);
 
    // connection operator
    void slotOpenCat(bool);

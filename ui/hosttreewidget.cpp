@@ -40,7 +40,7 @@ HostTreeWidget::HostTreeWidget(QWidget *parent/* = nullptr*/)
     _actDeleteTable = _contextMenu->addAction(QIcon(":/image/default/query.svg"), tr("delete table"));
 
     connect(this, &QTreeWidget::itemDoubleClicked, this, &HostTreeWidget::slotDoubleClicked);
-    connect(this, &QTreeWidget::itemChanged, this, &HostTreeWidget::slotItemChanged);
+    connect(this, &QTreeWidget::currentItemChanged, this, &HostTreeWidget::slotItemChanged);
 
     connect(_actOpenCat, &QAction::triggered, this, &HostTreeWidget::slotOpenCat);
     connect(_actCloseCat, &QAction::triggered, this, &HostTreeWidget::slotCloseCat);
@@ -234,18 +234,18 @@ void HostTreeWidget::slotDoubleClicked(QTreeWidgetItem *item, int)
     }
 }
 
-void HostTreeWidget::slotItemChanged(QTreeWidgetItem *item, int)
+void HostTreeWidget::slotItemChanged(QTreeWidgetItem *currItem, QTreeWidgetItem*)
 {
-    if(item == nullptr) return;
-    NodeType nodeType = (NodeType)getItemType(item);
+    if(currItem == nullptr) return;
+    NodeType nodeType = (NodeType)getItemType(currItem);
     switch (nodeType) {
     case NodeType::HOST:
-        _currentHostId = getItemHostId(item);
+        _currentHostId = getItemHostId(currItem);
         break;
     case NodeType::DATABASE:
     {
-        _currentHostId = getItemHostId(item->parent());
-        _currentDatabase = getItemDatabaseInfo(item);
+        _currentHostId = getItemHostId(currItem->parent());
+        _currentDatabase = getItemDatabaseInfo(currItem);
     }
         break;
     case NodeType::TABLE:
