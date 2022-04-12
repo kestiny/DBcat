@@ -124,6 +124,10 @@ QSqlDatabase MysqlOperator::getDBByHost(int id)
         iter = _mapDatabase.find(id);
     }
 
+    if(!iter->second.isOpen())
+    {
+        iter->second.open();
+    }
     return iter->second;
 }
 
