@@ -3,14 +3,25 @@
 #include <QTextBlock>
 #include <QShortcut>
 #include <QPlainTextEdit>
+#include <QCompleter>
+#include <QAbstractItemView>
+#include <QStringListModel>
 #include "regexpconstexpr.h"
 #include "appconfig.h"
 
 SqlEditor::SqlEditor(QWidget *parent)
     : CodeEditor(parent)
+    , _completer{nullptr}
 {
     _highligter = new CommentHighlighter(document());
     auto shortcut = QShortcut(QKeySequence("Ctrl+S"), this);
+
+    // syntax completer
+    _completer = new QCompleter(regExpFactory().keywords(), this);
+    _completer->setCaseSensitivity(Qt::CaseInsensitive);
+    _completer->setWidget(this);
+    connect(_completer, SIGNAL(activated(const QString&)), this, SLOT(slotCompleterActivated(const QString&)));
+
     connect(&shortcut, &QShortcut::activated, this, &SqlEditor::slotSaveEditorText);
     connect(this, &SqlEditor::textChanged, this, &SqlEditor::slotTextChanged);
 }
@@ -48,6 +59,60 @@ QString SqlEditor::currentSelectionSqlStatement()
     return preprocessingSql();
 }
 
+void SqlEditor::addTableNames(const QString &database, QStringList tables)
+{
+    if(!database.isEmpty() && tables.size() > 0)
+    {
+        _mapTables[database] = tables;
+        updateCompleterMode();
+    }
+}
+
+void SqlEditor::removeTableNames(const QString &database)
+{
+    auto iter = _mapTables.find(database);
+    if(iter != std::end(_mapTables))
+    {
+        _mapTables.erase(iter);
+        updateCompleterMode();
+    }
+}
+
+void SqlEditor::addTableFields(QStringList tables)
+{
+    if(tables.size() > 0)
+    {
+        updateCompleterMode(tables);
+    }
+}
+
+void SqlEditor::keyPressEvent(QKeyEvent *e)
+{
+    auto view = _completer->popup();
+    if (view && view->isVisible()) {
+        switch(e->key()) {
+        case Qt::Key_Escape:
+        case Qt::Key_Enter:
+        case Qt::Key_Return:
+        case Qt::Key_Tab:
+            e->ignore();
+            return;
+        default:
+            break;
+        }
+    }
+
+    QString word = currentWord();
+    if(_completer && !word.isEmpty())
+    {
+        _completer->setCompletionPrefix(word);
+        _completer->complete();
+    }
+    QRect rc = cursorRect();
+    _completer->complete(QRect{rc.x() + 20, rc.y() + 6, 300, rc.height()});
+    CodeEditor::keyPressEvent(e);
+}
+
 void SqlEditor::slotSaveEditorText()
 {
     QFile file(AppConfig::instance().configFile("content"));
@@ -61,6 +126,24 @@ void SqlEditor::slotSaveEditorText()
 void SqlEditor::slotTextChanged()
 {
 
+}
+
+void SqlEditor::slotCompleterActivated(const QString &text)
+{
+    QString completionPrefix = currentWord();
+    QString shouldReplaceText = text;
+    QTextCursor cursor = textCursor();
+    if (!shouldReplaceText.contains(completionPrefix))
+    {
+        cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, completionPrefix.size());
+        cursor.removeSelectedText();
+    }
+    else
+    {
+        shouldReplaceText = shouldReplaceText.replace(
+                    shouldReplaceText.indexOf(completionPrefix), completionPrefix.size(), "");
+    }
+    cursor.insertText(shouldReplaceText);
 }
 
 QString SqlEditor::preprocessingSql()
@@ -79,4 +162,31 @@ QString SqlEditor::preprocessingSql()
                 .append(" ");
     }
     return result;
+}
+
+QString SqlEditor::currentWord()
+{
+    QTextCursor cursor = textCursor();
+    while (cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor)) {
+        QString text = cursor.selectedText();
+        if (text.contains(" ") || cursor.atBlockStart()) {
+            break;
+        }
+    }
+    return cursor.selectedText().simplified();
+}
+
+void SqlEditor::updateCompleterMode(QStringList words)
+{
+    QStringList allWords = regExpFactory().keywords();
+    for (auto& [key, value] : _mapTables) {
+        allWords.append(value);
+    }
+
+    if(words.size() > 0)
+    {
+        allWords.append(words);
+    }
+
+    _completer->setModel(new QStringListModel{allWords});
 }

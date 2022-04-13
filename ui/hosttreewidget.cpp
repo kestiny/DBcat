@@ -329,6 +329,7 @@ void HostTreeWidget::slotCloseDB(bool)
     auto pItem = currentItem();
     if (pItem && getItemType(pItem) == NodeType::DATABASE)
     {
+        _sqlEditor->removeTableNames(pItem->text(0));
         auto items = pItem->takeChildren();
         //delete[] items;
         setItemIcon(pItem, NodeType::DATABASE, "close");
@@ -527,6 +528,7 @@ void HostTreeWidget::initTableTree(QTreeWidgetItem *pItem, int id, const Databas
     {
         return;
     }
+    QStringList tableName;
     for(auto table : tables) {
         auto item = new QTreeWidgetItem();
         item->setText(0, table.name);
@@ -534,6 +536,11 @@ void HostTreeWidget::initTableTree(QTreeWidgetItem *pItem, int id, const Databas
         setItemType(item, NodeType::TABLE);
         setItemIcon(item, NodeType::TABLE, "");
         parentItem->addChild(item);
+        tableName.append(table.name);
+    }
+    if(tableName.size() > 0)
+    {
+        _sqlEditor->addTableNames(database.name, tableName);
     }
     parentItem->setExpanded(expand);
 }
