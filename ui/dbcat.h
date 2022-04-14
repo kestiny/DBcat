@@ -29,6 +29,7 @@ private slots:
     void slotLoadStyleSheet(const QString& file);
     void slotExec();
     void slotSearchText(const QString &text);
+    void slotNewTables(QStringList);
 
 private:
     Ui::DBcat *ui;

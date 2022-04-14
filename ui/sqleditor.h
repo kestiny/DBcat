@@ -1,5 +1,6 @@
 #ifndef SQLEDITOR_H
 #define SQLEDITOR_H
+#include <set>
 #include "codeeditor.h"
 #include "commenthighlighter.h"
 QT_BEGIN_NAMESPACE
@@ -19,10 +20,13 @@ public:
     QString currentSelectionSqlStatement();
     void addTableNames(const QString& database, QStringList tables);
     void removeTableNames(const QString& database);
-    void addTableFields(QStringList tables);
+    void addTableFields(QStringList fields);
 
 protected:
     void keyPressEvent(QKeyEvent*) override;
+
+signals:
+    void signalNewTables(QStringList);
 
 private slots:
     void slotSaveEditorText();
@@ -32,12 +36,14 @@ private slots:
 private:
     QString preprocessingSql();
     QString currentWord();
+    void findTableNames();
     void updateCompleterMode(QStringList words = {});
 
 private:
     CommentHighlighter *_highligter;
     QCompleter* _completer;
     std::map<QString, QStringList> _mapTables;
+    QStringList _lastTableNames;
 };
 
 #endif // SQLEDITOR_H

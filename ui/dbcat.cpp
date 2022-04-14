@@ -35,6 +35,7 @@ DBcat::DBcat(QWidget *parent)
     connect(ui->lineEdit, &QLineEdit::returnPressed, this, [&]{this->nextSearchItem();});
     connect(ui->pushButtonPre, &QPushButton::clicked, this, [&]{this->preSearchItem();});
     connect(ui->pushButtonNext, &QPushButton::clicked, this, [&]{this->nextSearchItem();});
+    connect(ui->sqlEdit, &SqlEditor::signalNewTables, this, &DBcat::slotNewTables);
 }
 
 DBcat::~DBcat()
@@ -82,6 +83,19 @@ void DBcat::slotExec()
 void DBcat::slotSearchText(const QString &text)
 {
     searchItems(text);
+}
+
+void DBcat::slotNewTables(QStringList tables)
+{
+    QStringList fields;
+    for(auto& table : tables)
+    {
+        fields.append(ui->sqlControll->queryFields(ui->hostWidget->currentHostId(), table));
+    }
+    if(fields.size() > 0)
+    {
+        ui->sqlEdit->addTableFields(fields);
+    }
 }
 
 void DBcat::keyPressEvent(QKeyEvent *event)

@@ -26,6 +26,7 @@ public:
     void setTableName(int id, Database database, const QString& name);
 
     bool doExec(int id, Database database);
+    QStringList queryFields(int id, const QString& name);
 
 private slots:
     void slotCloseTab(int);

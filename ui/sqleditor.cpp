@@ -8,15 +8,17 @@
 #include <QStringListModel>
 #include "regexpconstexpr.h"
 #include "appconfig.h"
+#include "operation/syntaxparser.h"
 
 SqlEditor::SqlEditor(QWidget *parent)
     : CodeEditor(parent)
     , _completer{nullptr}
+    , _lastTableNames{}
 {
     _highligter = new CommentHighlighter(document());
     auto shortcut = QShortcut(QKeySequence("Ctrl+S"), this);
 
-    // syntax completer
+    // syntax complete
     _completer = new QCompleter(regExpFactory().keywords(), this);
     _completer->setCaseSensitivity(Qt::CaseInsensitive);
     _completer->setWidget(this);
@@ -78,12 +80,9 @@ void SqlEditor::removeTableNames(const QString &database)
     }
 }
 
-void SqlEditor::addTableFields(QStringList tables)
+void SqlEditor::addTableFields(QStringList fields)
 {
-    if(tables.size() > 0)
-    {
-        updateCompleterMode(tables);
-    }
+    updateCompleterMode(fields);
 }
 
 void SqlEditor::keyPressEvent(QKeyEvent *e)
@@ -103,6 +102,7 @@ void SqlEditor::keyPressEvent(QKeyEvent *e)
     }
 
     QString word = currentWord();
+    findTableNames();
     if(_completer && !word.isEmpty())
     {
         _completer->setCompletionPrefix(word);
@@ -148,7 +148,7 @@ void SqlEditor::slotCompleterActivated(const QString &text)
 
 QString SqlEditor::preprocessingSql()
 {
-    QString selectionText = textCursor().selectedText();
+    auto selectionText = textCursor().selectedText();
     QString result;
     for(QString str : selectionText.split(QChar::ParagraphSeparator, QString::SkipEmptyParts))
     {
@@ -166,7 +166,7 @@ QString SqlEditor::preprocessingSql()
 
 QString SqlEditor::currentWord()
 {
-    QTextCursor cursor = textCursor();
+    auto cursor = textCursor();
     while (cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor)) {
         QString text = cursor.selectedText();
         if (text.contains(" ") || cursor.atBlockStart()) {
@@ -174,6 +174,41 @@ QString SqlEditor::currentWord()
         }
     }
     return cursor.selectedText().simplified();
+}
+
+void SqlEditor::findTableNames()
+{
+    // find tabel: (curLine-5, curLine+5)
+    auto cursor = textCursor();
+    cursor.movePosition(QTextCursor::Up, QTextCursor::KeepAnchor, 5);
+    QString selectedText = cursor.selectedText();
+
+    cursor = textCursor();
+    cursor.movePosition(QTextCursor::Down, QTextCursor::KeepAnchor, 5);
+    selectedText.append(" ").append(cursor.selectedText());
+    selectedText = selectedText.simplified();
+
+    if(!selectedText.isEmpty())
+    {
+        SyntaxParser parser;
+        parser.parse(selectedText);
+        auto tables = parser.tableName().split(":");
+        tables.removeDuplicates();
+        bool hasNewTable = false;
+        for(auto table : tables)
+        {
+            if(!_lastTableNames.contains(table))
+            {
+                hasNewTable = true;
+                break;
+            }
+        }
+        if(hasNewTable)
+        {
+            _lastTableNames = tables;
+            emit signalNewTables(_lastTableNames);
+        }
+    }
 }
 
 void SqlEditor::updateCompleterMode(QStringList words)
