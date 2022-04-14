@@ -1,8 +1,9 @@
 #ifndef REGEXPCONSTEXPR_H
 #define REGEXPCONSTEXPR_H
-#include <QRegExp>
 #include <vector>
 #include <map>
+#include <QRegExp>
+#include <QStringList>
 
 enum Constexpr{
     TABLE_NAME_FIND,
@@ -23,10 +24,12 @@ public:
     QRegExp findPattern(Constexpr type);
     bool isMatch(Constexpr type, const QString& str);
     QString commentSymbol() { return _commentSybmol; }
+    QStringList keywords() {return _keywords; }
 
 private:
     std::map<Constexpr, QRegExp> _mapRegExp;
     QString _commentSybmol;
+    QStringList _keywords;
 };
 
 static RegExpConstexpr& regExpFactory()

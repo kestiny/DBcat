@@ -12,6 +12,22 @@ RegExpConstexpr::RegExpConstexpr()
     _mapRegExp[SQL_DML] = QRegExp(QString("(SELECT|UPDATE|DELETE|INSERT)\\s*"), Qt::CaseInsensitive);
     _mapRegExp[SELECT_CONTENT] = QRegExp(QString("^\\s*SELECT\\s*(.*)FROM"), Qt::CaseInsensitive);
     _mapRegExp[DATABASE_OR_TABLE_CREATE] = QRegExp(QString("^\\s*CREATE\\s*(DATABASE|TABLE)\\s*(\\w)*\\s*"), Qt::CaseInsensitive);
+
+    _keywords = QStringList{
+        QStringLiteral("ADD"),QStringLiteral("ALTER"),QStringLiteral("ALL"),QStringLiteral("AND"),QStringLiteral("ANY"),QStringLiteral("AS"),
+        QStringLiteral("ASC"),QStringLiteral("BACKUP"),QStringLiteral("BETWEEN"),QStringLiteral("CASE"),QStringLiteral("CHECK"),
+        QStringLiteral("COLUMN"),QStringLiteral("CONSTRAINT"),QStringLiteral("CREATE"),QStringLiteral("DATABASE"),QStringLiteral("DEFAULT"),
+        QStringLiteral("DELETE"),QStringLiteral("DESC"),QStringLiteral("DISTINCT"),QStringLiteral("DROP"),QStringLiteral("EXEC"),
+        QStringLiteral("EXISTS"),QStringLiteral("FOREIGN"),QStringLiteral("FROM"),QStringLiteral("FULL"),QStringLiteral("GROUP"),
+        QStringLiteral("HAVING"),QStringLiteral("IN"),QStringLiteral("INDEX"),QStringLiteral("INNER"),QStringLiteral("INSERT"),
+        QStringLiteral("IS"),QStringLiteral("JOIN"),QStringLiteral("LEFT"),QStringLiteral("LIKE"),QStringLiteral("LIMIT"),
+        QStringLiteral("NOT"),QStringLiteral("OR"),QStringLiteral("ORDER"),QStringLiteral("OUTER"),QStringLiteral("PRIMARY"),
+        QStringLiteral("PROCEDURE"),QStringLiteral("RIGHT"),QStringLiteral("ROWNUM"),QStringLiteral("SELECT"),
+        QStringLiteral("SET"),QStringLiteral("TABLE"),QStringLiteral("TOP"),QStringLiteral("TRUNCATE TABLE"),QStringLiteral("UNION"),
+        QStringLiteral("UNION ALL"),QStringLiteral("UNIQUE"),QStringLiteral("UPDATE"),QStringLiteral("VALUES"),QStringLiteral("VIEW"),
+        QStringLiteral("WHERE"),QStringLiteral("SHOW"),QStringLiteral("KEY"),QStringLiteral("BY"),QStringLiteral("INTO"),
+        QStringLiteral("NULL"),QStringLiteral("REPLACE")
+    };
 }
 
 std::vector<QString> RegExpConstexpr::captureTexts(Constexpr type, const QString& str)

@@ -4,6 +4,7 @@
 #include <QSqlError>
 #include <QStandardPaths>
 #include <QDir>
+#include <QFontDatabase>
 
 bool AppConfig::addHost(HostInfo info)
 {
@@ -95,19 +96,36 @@ QString AppConfig::decrypt(const QByteArray &text)
 
 QString AppConfig::configFile(const QString &name)
 {
-    return QString("%1/DBcat/%2").arg(_configDir, name);
+    return QString("%1/%2").arg(_configDir, name);
 }
 
 QString AppConfig::documentFile(const QString &name)
 {
-    return QString("%1/DBcat/%2").arg(_docDir, name);
+    return QString("%1/%2").arg(_docDir, name);
+}
+
+QFont AppConfig::iconFont(int size)
+{
+    _iconFont.setPointSize(size);
+    return _iconFont;
 }
 
 AppConfig::AppConfig()
-    : _configDir{QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)}
-    , _docDir{QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)}
+    : _configDir{QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation).append("/DBcat")}
+    , _docDir{QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation).append("/DBcat")}
 {
+    int fontId = QFontDatabase::addApplicationFont(":/image/fontawesome-webfont.ttf");
+    _iconFont.setFamily(QFontDatabase::applicationFontFamilies(fontId).front());
 
+    QDir dir;
+    if(!dir.exists(_configDir))
+    {
+        dir.mkpath(_configDir);
+    }
+    if(!dir.exists(_docDir))
+    {
+        dir.mkpath(_docDir);
+    }
 }
 
 AppConfig::~AppConfig()

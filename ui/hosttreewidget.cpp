@@ -1,13 +1,19 @@
 #include "hosttreewidget.h"
 #include "appconfig.h"
 #include "newhost.h"
+#include "operation/idboperator.h"
+#include "sqlresultcontroll.h"
 #include <QSqlQuery>
 #include "messagebox.h"
 
 HostTreeWidget::HostTreeWidget(QWidget *parent/* = nullptr*/)
-    :QTreeWidget{parent}, _currentHostId{-1}, _currentDatabase{""}
+    :QTreeWidget{parent}
+    , _currentHostId{-1}
+    , _currentDatabase{""}
 {
-    setExpandsOnDoubleClick(false);
+    setIndentation(indentation() / 2);
+    setExpandsOnDoubleClick(true);
+    setColumnCount(1);
 
     initHostTree();
 
@@ -34,7 +40,7 @@ HostTreeWidget::HostTreeWidget(QWidget *parent/* = nullptr*/)
     _actDeleteTable = _contextMenu->addAction(QIcon(":/image/default/query.svg"), tr("delete table"));
 
     connect(this, &QTreeWidget::itemDoubleClicked, this, &HostTreeWidget::slotDoubleClicked);
-    connect(this, &QTreeWidget::itemChanged, this, &HostTreeWidget::slotItemChanged);
+    connect(this, &QTreeWidget::currentItemChanged, this, &HostTreeWidget::slotItemChanged);
 
     connect(_actOpenCat, &QAction::triggered, this, &HostTreeWidget::slotOpenCat);
     connect(_actCloseCat, &QAction::triggered, this, &HostTreeWidget::slotCloseCat);
@@ -226,21 +232,20 @@ void HostTreeWidget::slotDoubleClicked(QTreeWidgetItem *item, int)
     case NodeType::NIL:
         break;
     }
-    item->setExpanded(!item->isExpanded());
 }
 
-void HostTreeWidget::slotItemChanged(QTreeWidgetItem *item, int)
+void HostTreeWidget::slotItemChanged(QTreeWidgetItem *currItem, QTreeWidgetItem*)
 {
-    if(item == nullptr) return;
-    NodeType nodeType = (NodeType)getItemType(item);
+    if(currItem == nullptr) return;
+    NodeType nodeType = (NodeType)getItemType(currItem);
     switch (nodeType) {
     case NodeType::HOST:
-        _currentHostId = getItemHostId(item);
+        _currentHostId = getItemHostId(currItem);
         break;
     case NodeType::DATABASE:
     {
-        _currentHostId = getItemHostId(item->parent());
-        _currentDatabase = getItemDatabaseInfo(item);
+        _currentHostId = getItemHostId(currItem->parent());
+        _currentDatabase = getItemDatabaseInfo(currItem);
     }
         break;
     case NodeType::TABLE:
@@ -277,7 +282,6 @@ void HostTreeWidget::slotOpenCat(bool)
             pItem->addChild(item);
         }
         _resultControll->setMessage(tr("connect server:%1").arg(pItem->text(0)));
-        pItem->setExpanded(true);
     }
 }
 
@@ -316,7 +320,6 @@ void HostTreeWidget::slotOpenDB(bool)
         // init table
         initTableTree(pItem, _currentHostId, _currentDatabase);
         setItemIcon(pItem, NodeType::DATABASE, "open");
-        pItem->setExpanded(true);
         _resultControll->setMessage(_dbOperator->lastExecMsg());
     }
 }
@@ -326,6 +329,7 @@ void HostTreeWidget::slotCloseDB(bool)
     auto pItem = currentItem();
     if (pItem && getItemType(pItem) == NodeType::DATABASE)
     {
+        _sqlEditor->removeTableNames(pItem->text(0));
         auto items = pItem->takeChildren();
         //delete[] items;
         setItemIcon(pItem, NodeType::DATABASE, "close");
@@ -524,6 +528,7 @@ void HostTreeWidget::initTableTree(QTreeWidgetItem *pItem, int id, const Databas
     {
         return;
     }
+    QStringList tableName;
     for(auto table : tables) {
         auto item = new QTreeWidgetItem();
         item->setText(0, table.name);
@@ -531,6 +536,11 @@ void HostTreeWidget::initTableTree(QTreeWidgetItem *pItem, int id, const Databas
         setItemType(item, NodeType::TABLE);
         setItemIcon(item, NodeType::TABLE, "");
         parentItem->addChild(item);
+        tableName.append(table.name);
+    }
+    if(tableName.size() > 0)
+    {
+        _sqlEditor->addTableNames(database.name, tableName);
     }
     parentItem->setExpanded(expand);
 }

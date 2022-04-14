@@ -4,6 +4,7 @@
 #include <QSqlRecord>
 #include <QSqlError>
 #include <QMessageBox>
+#include <QTime>
 #include "regexpconstexpr.h"
 #include "operation/syntaxparser.h"
 #include "ui/messagebox.h"
@@ -39,13 +40,13 @@ void SqlResultControll::initUi(IDBOperator *dbOperator, SqlEditor *sqlEdit, QTex
 
 void SqlResultControll::setMessage(const QString &msg)
 {
-    _messageEdit->setPlainText(msg);
+    _messageEdit->setPlainText(QTime::currentTime().toString("hh:mm:ss.zzz  ").append(msg));
     setCurrentIndex(0);
 }
 
 void SqlResultControll::addMessage(const QString &msg)
 {
-    _messageEdit->append(QString("\r\n\r\n").append(msg));
+    _messageEdit->append(QTime::currentTime().toString("hh:mm:ss.zzz  ").append(QString("\r\n\r\n")).append(msg));
 }
 
 void SqlResultControll::setTableName(int id, Database, const QString &name)
@@ -92,7 +93,7 @@ bool SqlResultControll::doExec(int id, Database database)
 
     if(!strSql.isEmpty() && query->exec(strSql))
     {
-        if(query->size() > 0)
+        if(query->isSelect())
         {
             if(_resultModel == nullptr)
             {
@@ -106,6 +107,14 @@ bool SqlResultControll::doExec(int id, Database database)
             setCurrentIndex(1);
             _resultModel->setQuery(*query);
         }
+        else
+        {
+            SyntaxParser parser;
+            parser.parse(strSql);
+            setMessage(tr("execute %1 command, affected %2 rows.")
+                       .arg(parser.sqlCommand(), QString::number(query->numRowsAffected())));
+            setCurrentIndex(0);
+        }
         return true;
     }
     else
@@ -115,6 +124,22 @@ bool SqlResultControll::doExec(int id, Database database)
         addMessage(tr("[Error] %1").arg(query->lastError().text()));
         return false;
     }
+}
+
+QStringList SqlResultControll::queryFields(int id, const QString &name)
+{
+    QStringList fields;
+    auto query = _dbOperator->getQuery(id, {"information_schema"});
+    if(query != nullptr)
+    {
+        query->exec(QString("select DISTINCT COLUMN_NAME from COLUMNS where table_name='%1'").arg(name));
+        int fieldNo = query->record().indexOf("COLUMN_NAME");
+        while (query->next())
+        {
+            fields.append(query->value(fieldNo).toString());
+        }
+    }
+    return fields;
 }
 
 void SqlResultControll::slotCloseTab(int index)

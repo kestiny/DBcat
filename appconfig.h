@@ -2,6 +2,7 @@
 #define APPCONFIG_H
 #include <list>
 #include <QSqlDatabase>
+#include <QFont>
 #include "dbtype.h"
 
 class AppConfig
@@ -22,6 +23,7 @@ public:
     QString configFile(const QString &name);
     QString documentFile(const QString &name);
 
+    QFont iconFont(int size = 12);
 private:
     AppConfig();
     ~AppConfig();
@@ -32,6 +34,7 @@ private:
     QString _strError;
     QString _configDir;
     QString _docDir;
+    QFont _iconFont;
 };
 
 #endif // APPCONFIG_H
