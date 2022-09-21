@@ -285,7 +285,7 @@
          <attribute name="title">
           <string>Message</string>
          </attribute>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <layout class="QVBoxLayout" name="verticalLayout_4">
           <property name="spacing">
            <number>0</number>
           </property>

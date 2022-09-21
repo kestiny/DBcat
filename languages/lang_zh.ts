@@ -6,18 +6,22 @@
     <message>
         <location filename="../ui/dbcat.ui" line="14"/>
         <source>DBcat</source>
-        <translation type="unfinished"></translation>
+        <translation>DBCat</translation>
     </message>
     <message>
         <location filename="../ui/dbcat.ui" line="80"/>
         <source>No results</source>
-        <translation type="unfinished"></translation>
+        <translation>无结果</translation>
     </message>
     <message>
         <location filename="../ui/dbcat.ui" line="224"/>
         <location filename="../ui/dbcat.ui" line="233"/>
         <source>F9</source>
-        <translation type="unfinished"></translation>
+        <translation>F9</translation>
+    </message>
+    <message>
+        <source> Copy Headers</source>
+        <translation type="vanished">复制(表头)</translation>
     </message>
     <message>
         <location filename="../ui/dbcat.ui" line="286"/>
@@ -30,14 +34,34 @@
         <translation>结果</translation>
     </message>
     <message>
-        <location filename="../ui/dbcat.cpp" line="63"/>
+        <location filename="../ui/dbcat.cpp" line="67"/>
         <source>Please connect to the host, and select one database to use.</source>
         <translation>请先连接服务器，并选择一个数据库</translation>
     </message>
     <message>
-        <location filename="../ui/dbcat.cpp" line="69"/>
+        <location filename="../ui/dbcat.cpp" line="73"/>
         <source>Please select sql statement to query.</source>
         <translation>请选择您要执行的sql语句</translation>
+    </message>
+    <message>
+        <location filename="../ui/dbcat.cpp" line="231"/>
+        <source>&amp;File</source>
+        <translation>文件</translation>
+    </message>
+    <message>
+        <location filename="../ui/dbcat.cpp" line="235"/>
+        <source>Exit</source>
+        <translation>退出</translation>
+    </message>
+    <message>
+        <location filename="../ui/dbcat.cpp" line="240"/>
+        <source>&amp;Edit</source>
+        <translation>编辑</translation>
+    </message>
+    <message>
+        <location filename="../ui/dbcat.cpp" line="241"/>
+        <source>Copy Header</source>
+        <translation>复制表头</translation>
     </message>
 </context>
 <context>
@@ -85,99 +109,99 @@
         <translation>关闭连接</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="28"/>
+        <location filename="../ui/hosttreewidget.cpp" line="29"/>
         <source>new Connection</source>
         <translation>新建连接</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="29"/>
+        <location filename="../ui/hosttreewidget.cpp" line="30"/>
         <source>del Connection</source>
         <translation>删除连接</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="32"/>
+        <location filename="../ui/hosttreewidget.cpp" line="33"/>
         <source>open Database</source>
         <translation>打开数据库</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="33"/>
+        <location filename="../ui/hosttreewidget.cpp" line="34"/>
         <source>close Database</source>
         <translation>关闭数据库</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="34"/>
+        <location filename="../ui/hosttreewidget.cpp" line="36"/>
         <source>create Database</source>
         <translation>创建数据库</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="35"/>
+        <location filename="../ui/hosttreewidget.cpp" line="37"/>
         <source>drop Database</source>
         <translation>删除数据库</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="38"/>
+        <location filename="../ui/hosttreewidget.cpp" line="40"/>
         <source>create table</source>
         <translation>新建表</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="39"/>
+        <location filename="../ui/hosttreewidget.cpp" line="41"/>
         <source>drop table</source>
         <translation>删除表</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="40"/>
+        <location filename="../ui/hosttreewidget.cpp" line="42"/>
         <source>delete table</source>
         <translation>清空表</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="227"/>
+        <location filename="../ui/hosttreewidget.cpp" line="235"/>
         <source>[OPEN TABLE] %1</source>
         <translation>[打开表] %1</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="284"/>
+        <location filename="../ui/hosttreewidget.cpp" line="292"/>
         <source>connect server:%1</source>
         <translation>连接服务器:%1</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="310"/>
+        <location filename="../ui/hosttreewidget.cpp" line="318"/>
         <source>[DELETE HOST] %1</source>
         <translation>[删除链接] %1</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="349"/>
-        <location filename="../ui/hosttreewidget.cpp" line="381"/>
-        <location filename="../ui/hosttreewidget.cpp" line="402"/>
+        <location filename="../ui/hosttreewidget.cpp" line="357"/>
+        <location filename="../ui/hosttreewidget.cpp" line="389"/>
+        <location filename="../ui/hosttreewidget.cpp" line="410"/>
         <source>warning</source>
         <translation>请密切关注</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="349"/>
+        <location filename="../ui/hosttreewidget.cpp" line="357"/>
         <source>confirm drop database:</source>
         <translation>确认要删除数据库</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="361"/>
+        <location filename="../ui/hosttreewidget.cpp" line="369"/>
         <source>[DROP DATABASE] %1</source>
         <translation>[删除数据库] %1</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="381"/>
+        <location filename="../ui/hosttreewidget.cpp" line="389"/>
         <source>confirm drop table:</source>
         <translation>确认要删除表</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="392"/>
+        <location filename="../ui/hosttreewidget.cpp" line="400"/>
         <source>[DROP TABLE] %1</source>
         <translation>[删除表] %1</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="402"/>
+        <location filename="../ui/hosttreewidget.cpp" line="410"/>
         <source>confirm delete table&apos;s all data:</source>
         <translation>确认要清空表中所有数据</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="409"/>
+        <location filename="../ui/hosttreewidget.cpp" line="417"/>
         <source>[DELETE TABLE] %1</source>
         <translation>[删除表] %1</translation>
     </message>
@@ -187,7 +211,7 @@
     <message>
         <location filename="../ui/messagebox.ui" line="26"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Form</translation>
     </message>
     <message>
         <location filename="../ui/messagebox.ui" line="177"/>
@@ -205,28 +229,28 @@
     <message>
         <location filename="../ui/newhost.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Form</translation>
     </message>
     <message>
         <location filename="../ui/newhost.ui" line="78"/>
         <source>Mysql</source>
-        <translation type="unfinished"></translation>
+        <translation>Mysql</translation>
     </message>
     <message>
         <location filename="../ui/newhost.ui" line="94"/>
         <source>Sqlite3</source>
-        <translation type="unfinished"></translation>
+        <translation>Sqlite3</translation>
     </message>
     <message>
         <location filename="../ui/newhost.ui" line="123"/>
         <source>root</source>
-        <translation type="unfinished"></translation>
+        <translation>root</translation>
     </message>
     <message>
         <location filename="../ui/newhost.ui" line="149"/>
         <location filename="../ui/newhost.ui" line="182"/>
         <source>localhost</source>
-        <translation type="unfinished"></translation>
+        <translation>localhost</translation>
     </message>
     <message>
         <location filename="../ui/newhost.ui" line="156"/>
@@ -261,7 +285,7 @@
     <message>
         <location filename="../ui/newhost.ui" line="223"/>
         <source>3306</source>
-        <translation type="unfinished"></translation>
+        <translation>3306</translation>
     </message>
     <message>
         <location filename="../ui/newhost.ui" line="263"/>
@@ -279,7 +303,7 @@
         <translation>新建连接向导</translation>
     </message>
     <message>
-        <location filename="../ui/newhost.cpp" line="34"/>
+        <location filename="../ui/newhost.cpp" line="35"/>
         <source>new mysql</source>
         <translation>新建Mysql</translation>
     </message>
@@ -287,49 +311,49 @@
 <context>
     <name>SqlResultControll</name>
     <message>
-        <location filename="../ui/sqlresultcontroll.cpp" line="34"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="36"/>
         <source>Message</source>
         <translation>消息</translation>
     </message>
     <message>
-        <location filename="../ui/sqlresultcontroll.cpp" line="73"/>
-        <location filename="../ui/sqlresultcontroll.cpp" line="121"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="75"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="125"/>
         <source>[Selection] %1</source>
         <translation>[选中] %1</translation>
     </message>
     <message>
-        <location filename="../ui/sqlresultcontroll.cpp" line="74"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="76"/>
         <source>[Query] please input a valid sql statement.</source>
         <translation>[查询] 请输入合法的sql语句。</translation>
     </message>
     <message>
-        <location filename="../ui/sqlresultcontroll.cpp" line="79"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="81"/>
         <source>warning</source>
         <translation>请高度注意</translation>
     </message>
     <message>
-        <location filename="../ui/sqlresultcontroll.cpp" line="79"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="81"/>
         <source>exec dangerous command!!!</source>
         <translation>您正在执行数据修改的危险命令!!!</translation>
     </message>
     <message>
-        <location filename="../ui/sqlresultcontroll.cpp" line="88"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="90"/>
         <source>[query] %1</source>
         <translation>[查询] %1</translation>
     </message>
     <message>
-        <location filename="../ui/sqlresultcontroll.cpp" line="89"/>
-        <location filename="../ui/sqlresultcontroll.cpp" line="123"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="91"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="127"/>
         <source>[Error] %1</source>
         <translation>[错误] %1</translation>
     </message>
     <message>
-        <location filename="../ui/sqlresultcontroll.cpp" line="113"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="117"/>
         <source>execute %1 command, affected %2 rows.</source>
         <translation>执行 %1 命令, 影响到 %2 行.</translation>
     </message>
     <message>
-        <location filename="../ui/sqlresultcontroll.cpp" line="122"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="126"/>
         <source>[Query] %1</source>
         <translation>[查询] %1</translation>
     </message>

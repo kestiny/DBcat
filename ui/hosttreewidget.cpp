@@ -25,12 +25,14 @@ HostTreeWidget::HostTreeWidget(QWidget *parent/* = nullptr*/)
     _contextMenu = new QMenu();
     _actOpenCat = _contextMenu->addAction(QIcon(":/image/default/server.svg"), tr("open Connection"));
     _actCloseCat = _contextMenu->addAction(QIcon(":/image/default/server.svg"), tr("close Connection"));
+    _contextMenu->addSeparator();
     _actNewCat = _contextMenu->addAction(QIcon(":/image/default/server.svg"), tr("new Connection"));
     _actDelCat = _contextMenu->addAction(QIcon(":/image/default/server.svg"), tr("del Connection"));
 
     _contextMenu->addSeparator();
     _actOpenDB = _contextMenu->addAction(QIcon(":/image/default/database_open.png"), tr("open Database"));
     _actCloseDB = _contextMenu->addAction(QIcon(":/image/default/database_open.png"), tr("close Database"));
+    _contextMenu->addSeparator();
     _actCreateDB = _contextMenu->addAction(QIcon(":/image/default/database_open.png"), tr("create Database"));
     _actDropDB = _contextMenu->addAction(QIcon(":/image/default/database_open.png"), tr("drop Database"));
 
@@ -113,6 +115,12 @@ void HostTreeWidget::addItemCommand(const QString &name)
             }
         }
     }
+}
+
+void HostTreeWidget::addFileMenuAction(QMenu *meun)
+{
+    meun->addAction(_actOpenCat);
+    meun->addAction(_actCloseCat);
 }
 
 void HostTreeWidget::showContextMenu(const QPoint &pos)
@@ -421,7 +429,7 @@ void HostTreeWidget::initHostTree()
 
 void HostTreeWidget::updateHostTree()
 {
-    std::map<int, QTreeWidgetItem*> indexs;
+    std::map<QString, QTreeWidgetItem*> indexs;
     for(int i = 0; i < topLevelItemCount(); ++i)
     {
         auto item = topLevelItem(i);
@@ -463,12 +471,12 @@ QTreeWidgetItem *HostTreeWidget::createItem(HostInfo info)
     return item;
 }
 
-int HostTreeWidget::getItemHostId(QTreeWidgetItem *pItem)
+QString HostTreeWidget::getItemHostId(QTreeWidgetItem *pItem)
 {
-    return pItem->data(0, Qt::UserRole + 998).toInt();
+    return pItem->data(0, Qt::UserRole + 998).toString();
 }
 
-void HostTreeWidget::setItemHostId(QTreeWidgetItem *pItem, int id)
+void HostTreeWidget::setItemHostId(QTreeWidgetItem *pItem, QString id)
 {
     if(pItem == nullptr)
     {
@@ -506,7 +514,7 @@ int HostTreeWidget::getItemType(QTreeWidgetItem *pItem)
     return pItem->data(0, Qt::UserRole + 999).toInt();
 }
 
-void HostTreeWidget::initTableTree(QTreeWidgetItem *pItem, int id, const Database &database, bool expand)
+void HostTreeWidget::initTableTree(QTreeWidgetItem *pItem, QString id, const Database &database, bool expand)
 {
     if(pItem == NULL
             || id == 0

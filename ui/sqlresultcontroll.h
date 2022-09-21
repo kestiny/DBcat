@@ -23,16 +23,17 @@ public:
     void setMessage(const QString& msg);
     void addMessage(const QString& msg);
 
-    void setTableName(int id, Database database, const QString& name);
+    void setTableName(QString id, Database database, const QString& name);
 
-    bool doExec(int id, Database database);
-    QStringList queryFields(int id, const QString& name);
+    bool doExec(QString id, Database database);
+    QStringList queryFields(QString id, const QString& name);
 
 private slots:
     void slotCloseTab(int);
 
 private:
     void addResultTab(const QString& name, QSqlTableModel* model);
+    QTableView* getView();
 
 private:
     IDBOperator *_dbOperator;

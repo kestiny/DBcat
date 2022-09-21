@@ -29,9 +29,10 @@ public:
     void initDatabseOperator(IDBOperator *op,
                              SqlResultControll *resultControll,
                              SqlEditor *sqlEditor);
-    int currentHostId(){ return _currentHostId; }
+    QString currentHostId(){ return _currentHostId; }
     Database currentDatabase() { return _currentDatabase; }
     void addItemCommand(const QString& name);
+    void addFileMenuAction(QMenu *meun);
 
 private slots:
    void showContextMenu(const QPoint &);
@@ -59,13 +60,13 @@ private:
    void initHostTree();
    void updateHostTree();
    QTreeWidgetItem *createItem(HostInfo info);
-   int getItemHostId(QTreeWidgetItem *pItem);
-   void setItemHostId(QTreeWidgetItem *pItem, int id);
+   QString getItemHostId(QTreeWidgetItem *pItem);
+   void setItemHostId(QTreeWidgetItem *pItem, QString id);
    Database getItemDatabaseInfo(QTreeWidgetItem *pItem);
    void setItemDatabaseInfo(QTreeWidgetItem *pItem, Database info);
    void setItemType(QTreeWidgetItem *pItem, NodeType type);
    int getItemType(QTreeWidgetItem *pItem);
-   void initTableTree(QTreeWidgetItem *pItem, int id, const Database& database, bool expand = false);
+   void initTableTree(QTreeWidgetItem *pItem, QString id, const Database& database, bool expand = false);
    void setItemIcon(QTreeWidgetItem *pItem, NodeType type, const QString& name);
    void closeHost(QTreeWidgetItem *pItem);
 
@@ -88,7 +89,7 @@ private:
    IDBOperator *_dbOperator;
    SqlResultControll *_resultControll;
    SqlEditor *_sqlEditor;
-   int _currentHostId;
+   QString _currentHostId;
    Database _currentDatabase;
 };
 

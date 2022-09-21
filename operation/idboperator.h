@@ -7,13 +7,13 @@ class IDBOperator
 {
 public:
     virtual bool connection(HostInfo info) = 0;
-    virtual bool closeConnection(int id) = 0;
+    virtual bool closeConnection(QString id) = 0;
 
-    virtual std::list<Database> database(int id) = 0;
-    virtual std::list<Table> tables(int id, Database database) = 0;
+    virtual std::list<Database> database(QString id) = 0;
+    virtual std::list<Table> tables(QString id, Database database) = 0;
 
-    virtual QSqlQuery* getQuery(int id, Database database) = 0;
-    virtual QSqlDatabase getDatabase(int id) =0;
+    virtual QSqlQuery* getQuery(QString id, Database database) = 0;
+    virtual QSqlDatabase getDatabase(QString id) =0;
 
     virtual QString lastExecMsg() = 0;
     virtual QString lastError() = 0;
