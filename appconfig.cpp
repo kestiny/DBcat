@@ -31,7 +31,7 @@ std::list<HostInfo> AppConfig::listHosts()
     while (sqlQuery.next()) {
         results.emplace_back(
                     HostInfo{
-                        sqlQuery.value(0).toInt(),
+                        sqlQuery.value(0).toString(),
                         sqlQuery.value(1).toString(),
                         sqlQuery.value(2).toString(),
                         sqlQuery.value(3).toString(),
@@ -44,7 +44,7 @@ std::list<HostInfo> AppConfig::listHosts()
     return results;
 }
 
-HostInfo AppConfig::findHost(int id)
+HostInfo AppConfig::findHost(QString id)
 {
     auto sqlQuery = getQuery();
     auto str = QString("select name,host,port,userName,password,sqlType "
@@ -65,10 +65,10 @@ HostInfo AppConfig::findHost(int id)
     return {};
 }
 
-bool AppConfig::deleteHost(int id)
+bool AppConfig::deleteHost(QString id)
 {
     auto sqlQuery = getQuery();
-    bool ret = sqlQuery.exec(QString("delete from hostInfo where id=%1").arg(QString::number(id)));
+    bool ret = sqlQuery.exec(QString("delete from hostInfo where id=%1").arg(id));
     _strError = sqlQuery.lastError().text();
     return ret;
 }

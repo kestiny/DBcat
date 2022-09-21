@@ -2,6 +2,9 @@
 #include "ui_dbcat.h"
 #include <QFile>
 #include <QTreeWidgetItem>
+#include <QGuiApplication>
+#include <QClipboard>
+#include <QTableView>
 #include "operation/mysqloperator.h"
 #include "regexpconstexpr.h"
 
@@ -13,6 +16,7 @@ DBcat::DBcat(QWidget *parent)
     ui->setupUi(this);
     slotLoadStyleSheet("default.qss");
 
+    initMenuBar();
     ui->pushButton_2->hide();
     ui->widgetSearch->hide();
     auto oper = new MysqlOperator{};
@@ -98,6 +102,11 @@ void DBcat::slotNewTables(QStringList tables)
     }
 }
 
+void DBcat::slotExit()
+{
+    exit(0);
+}
+
 void DBcat::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_F
@@ -105,6 +114,10 @@ void DBcat::keyPressEvent(QKeyEvent *event)
     {
         ui->widgetSearch->show();
         ui->lineEdit->setFocus();
+    }
+    else if(event->matches(QKeySequence::Copy))
+    {
+        clipboardCopyData();
     }
     QWidget::keyPressEvent(event);
 }
@@ -163,4 +176,70 @@ void DBcat::nextSearchItem()
     ui->hostWidget->setCurrentItem(_lastSearchItems.at(_searchIndex - 1));
     ui->label->setText(QString("%1 of %2").arg(QString::number(_searchIndex),
                                                QString::number(_lastSearchItems.size())));
+}
+
+void DBcat::clipboardCopyData()
+{
+    auto view = dynamic_cast<QTableView*>(ui->sqlControll->currentWidget());
+    if(view)
+    {
+        QItemSelectionModel *select = view->selectionModel();
+
+        if(select->hasSelection())
+        {
+            std::map<int, QString> copyContent;
+            std::set<int> columns;
+            auto indexList = select->selectedIndexes();
+            for(auto index : indexList)
+            {
+                auto iter = copyContent.find(index.row());
+                if(iter == std::end(copyContent)){
+                    copyContent[index.row()] = index.data().toString();
+                }
+                else
+                {
+                    iter->second.append("\t").append(index.data().toString());
+                }
+                columns.emplace(index.column());
+            }
+
+            if(indexList.size() > 0)
+            {
+                QString copyText;
+                if(_copyHeader->isChecked())
+                {
+                    for(const auto& value : columns)
+                    {
+                        copyText.append("\t").append(view->model()->headerData(value, Qt::Horizontal).toString());
+                    }
+                }
+
+                for (const auto& [key, value] : copyContent)
+                {
+                    copyText.append("\n").append(value);
+                }
+                copyText = copyText.right(copyText.length() - 1);
+                QClipboard *clipboard = QGuiApplication::clipboard();
+                clipboard->setText(copyText);
+            }
+        }
+    }
+}
+
+void DBcat::initMenuBar()
+{
+    QMenu *fileMenu = new QMenu(tr("&File"));
+    ui->hostWidget->addFileMenuAction(fileMenu);
+    fileMenu->addSeparator();
+
+    QAction *exit = new QAction(tr("Exit"));
+    connect(exit, &QAction::triggered, this, &DBcat::slotExit);
+    fileMenu->addAction(exit);
+    menuBar()->addMenu(fileMenu);
+
+    QMenu *editMenu = new QMenu(tr("&Edit"));
+    _copyHeader = new QAction(tr("Copy Header"));
+    _copyHeader->setCheckable(true);
+    editMenu->addAction(_copyHeader);
+    menuBar()->addMenu(editMenu);
 }

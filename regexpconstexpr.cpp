@@ -2,7 +2,7 @@
 
 RegExpConstexpr::RegExpConstexpr()
 {
-    _commentSybmol = QString{"//|#|--"};
+    _commentSybmol = QString{"#|--"};
     _mapRegExp[TABLE_NAME_FIND] = QRegExp("(into|from|update|join)\\s*((\\w|-|\\.|`|\"|')+)?",
                              Qt::CaseInsensitive);
     _mapRegExp[TABLE_NAME_KEYWORD] = QRegExp("into|from|update|join", Qt::CaseInsensitive);

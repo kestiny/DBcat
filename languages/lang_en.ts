@@ -30,13 +30,33 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/dbcat.cpp" line="63"/>
+        <location filename="../ui/dbcat.cpp" line="67"/>
         <source>Please connect to the host, and select one database to use.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/dbcat.cpp" line="69"/>
+        <location filename="../ui/dbcat.cpp" line="73"/>
         <source>Please select sql statement to query.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/dbcat.cpp" line="231"/>
+        <source>&amp;File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/dbcat.cpp" line="235"/>
+        <source>Exit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/dbcat.cpp" line="240"/>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/dbcat.cpp" line="241"/>
+        <source>Copy Header</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -53,99 +73,99 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="28"/>
+        <location filename="../ui/hosttreewidget.cpp" line="29"/>
         <source>new Connection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="29"/>
+        <location filename="../ui/hosttreewidget.cpp" line="30"/>
         <source>del Connection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="32"/>
+        <location filename="../ui/hosttreewidget.cpp" line="33"/>
         <source>open Database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="33"/>
+        <location filename="../ui/hosttreewidget.cpp" line="34"/>
         <source>close Database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="34"/>
+        <location filename="../ui/hosttreewidget.cpp" line="36"/>
         <source>create Database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="35"/>
+        <location filename="../ui/hosttreewidget.cpp" line="37"/>
         <source>drop Database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="38"/>
+        <location filename="../ui/hosttreewidget.cpp" line="40"/>
         <source>create table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="39"/>
+        <location filename="../ui/hosttreewidget.cpp" line="41"/>
         <source>drop table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="40"/>
+        <location filename="../ui/hosttreewidget.cpp" line="42"/>
         <source>delete table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="227"/>
+        <location filename="../ui/hosttreewidget.cpp" line="235"/>
         <source>[OPEN TABLE] %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="284"/>
+        <location filename="../ui/hosttreewidget.cpp" line="292"/>
         <source>connect server:%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="310"/>
+        <location filename="../ui/hosttreewidget.cpp" line="318"/>
         <source>[DELETE HOST] %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="349"/>
-        <location filename="../ui/hosttreewidget.cpp" line="381"/>
-        <location filename="../ui/hosttreewidget.cpp" line="402"/>
+        <location filename="../ui/hosttreewidget.cpp" line="357"/>
+        <location filename="../ui/hosttreewidget.cpp" line="389"/>
+        <location filename="../ui/hosttreewidget.cpp" line="410"/>
         <source>warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="349"/>
+        <location filename="../ui/hosttreewidget.cpp" line="357"/>
         <source>confirm drop database:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="361"/>
+        <location filename="../ui/hosttreewidget.cpp" line="369"/>
         <source>[DROP DATABASE] %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="381"/>
+        <location filename="../ui/hosttreewidget.cpp" line="389"/>
         <source>confirm drop table:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="392"/>
+        <location filename="../ui/hosttreewidget.cpp" line="400"/>
         <source>[DROP TABLE] %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="402"/>
+        <location filename="../ui/hosttreewidget.cpp" line="410"/>
         <source>confirm delete table&apos;s all data:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="409"/>
+        <location filename="../ui/hosttreewidget.cpp" line="417"/>
         <source>[DELETE TABLE] %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -247,7 +267,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/newhost.cpp" line="34"/>
+        <location filename="../ui/newhost.cpp" line="35"/>
         <source>new mysql</source>
         <translation type="unfinished"></translation>
     </message>
@@ -255,49 +275,49 @@
 <context>
     <name>SqlResultControll</name>
     <message>
-        <location filename="../ui/sqlresultcontroll.cpp" line="34"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="36"/>
         <source>Message</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/sqlresultcontroll.cpp" line="73"/>
-        <location filename="../ui/sqlresultcontroll.cpp" line="121"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="75"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="125"/>
         <source>[Selection] %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/sqlresultcontroll.cpp" line="74"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="76"/>
         <source>[Query] please input a valid sql statement.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/sqlresultcontroll.cpp" line="79"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="81"/>
         <source>warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/sqlresultcontroll.cpp" line="79"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="81"/>
         <source>exec dangerous command!!!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/sqlresultcontroll.cpp" line="88"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="90"/>
         <source>[query] %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/sqlresultcontroll.cpp" line="89"/>
-        <location filename="../ui/sqlresultcontroll.cpp" line="123"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="91"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="127"/>
         <source>[Error] %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/sqlresultcontroll.cpp" line="113"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="117"/>
         <source>execute %1 command, affected %2 rows.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/sqlresultcontroll.cpp" line="122"/>
+        <location filename="../ui/sqlresultcontroll.cpp" line="126"/>
         <source>[Query] %1</source>
         <translation type="unfinished"></translation>
     </message>
