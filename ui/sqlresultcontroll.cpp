@@ -5,6 +5,7 @@
 #include <QSqlError>
 #include <QMessageBox>
 #include <QTime>
+#include <QSortFilterProxyModel>
 #include "regexpconstexpr.h"
 #include "operation/syntaxparser.h"
 #include "ui/messagebox.h"
@@ -49,7 +50,7 @@ void SqlResultControll::addMessage(const QString &msg)
     _messageEdit->append(QTime::currentTime().toString("hh:mm:ss.zzz  ").append(QString("\r\n\r\n")).append(msg));
 }
 
-void SqlResultControll::setTableName(int id, Database, const QString &name)
+void SqlResultControll::setTableName(QString id, Database, const QString &name)
 {
     auto iter = _mapTable.find(name);
     if(iter != std::end(_mapTable))
@@ -66,7 +67,7 @@ void SqlResultControll::setTableName(int id, Database, const QString &name)
     addResultTab(name, model);
 }
 
-bool SqlResultControll::doExec(int id, Database database)
+bool SqlResultControll::doExec(QString id, Database database)
 {
     QString strSql = _sqlEdit->currentSelectionSqlStatement();
     if(strSql.isEmpty())
@@ -98,8 +99,10 @@ bool SqlResultControll::doExec(int id, Database database)
             if(_resultModel == nullptr)
             {
                 _resultModel = new QSqlQueryModel();
-                auto view = new QTableView;
-                view->setModel(_resultModel);
+                QSortFilterProxyModel *sqlproxy = new QSortFilterProxyModel(this);
+                sqlproxy->setSourceModel(_resultModel);
+                auto view = getView();
+                view->setModel(sqlproxy);
                 insertTab(1, view, QIcon("://image/default/query.svg"), "Result");
                 static_cast<QTabBar*>(tabBar())->setTabButton(1, QTabBar::RightSide, nullptr);
             }
@@ -126,7 +129,7 @@ bool SqlResultControll::doExec(int id, Database database)
     }
 }
 
-QStringList SqlResultControll::queryFields(int id, const QString &name)
+QStringList SqlResultControll::queryFields(QString id, const QString &name)
 {
     QStringList fields;
     auto query = _dbOperator->getQuery(id, {"information_schema"});
@@ -157,9 +160,17 @@ void SqlResultControll::slotCloseTab(int index)
 
 void SqlResultControll::addResultTab(const QString &name, QSqlTableModel *model)
 {
-    auto view = new QTableView;
+    auto view = getView();
     view->setModel(model);
     int index = addTab(view, QIcon("://image/default/query.svg"), name);
     _mapTable[name] = {index, model};
     setCurrentIndex(index);
+}
+
+QTableView *SqlResultControll::getView()
+{
+    auto view = new QTableView;
+    view->setSortingEnabled(true);
+
+    return view;
 }

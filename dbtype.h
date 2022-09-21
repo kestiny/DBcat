@@ -17,7 +17,7 @@
  */
 struct HostInfo
 {
-    int id;
+    QString id;
     QString name;
     QString host;
     QString port;

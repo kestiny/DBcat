@@ -15,8 +15,8 @@ public:
 
     bool addHost(HostInfo);
     std::list<HostInfo> listHosts();
-    HostInfo findHost(int id);
-    bool deleteHost(int id);
+    HostInfo findHost(QString id);
+    bool deleteHost(QString id);
     QString lastError() { return _strError; }
     QByteArray encrypt(const QString& text);
     QString decrypt(const QByteArray& text);

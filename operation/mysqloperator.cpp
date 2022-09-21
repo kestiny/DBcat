@@ -13,7 +13,7 @@ MysqlOperator::~MysqlOperator()
 {
     for(auto& [key, value] : _mapDatabase)
     {
-        value.close();
+        value->db.close();
     }
 
     _mapDatabase.clear();
@@ -34,7 +34,7 @@ bool MysqlOperator::connection(HostInfo info)
     db.setPassword(info.password);
     if(db.open())
     {
-        _mapDatabase[info.id]= db;
+        _mapDatabase[info.id] = new ConnectOption(db, QDateTime::currentDateTime());
         return true;
     }
     _lastExecMsg = QString("[Open database] %1:%2").arg(info.host, info.port);
@@ -42,7 +42,7 @@ bool MysqlOperator::connection(HostInfo info)
     return false;
 }
 
-std::list<Database> MysqlOperator::database(int id)
+std::list<Database> MysqlOperator::database(QString id)
 {
     auto db = getDBByHost(id);
     if(!db.isOpen())
@@ -63,7 +63,7 @@ std::list<Database> MysqlOperator::database(int id)
     return results;
 }
 
-std::list<Table> MysqlOperator::tables(int id, Database database)
+std::list<Table> MysqlOperator::tables(QString id, Database database)
 {
     auto db = getDBByHost(id);
     std::list<Table> results;
@@ -85,7 +85,7 @@ std::list<Table> MysqlOperator::tables(int id, Database database)
     return results;
 }
 
-QSqlQuery* MysqlOperator::getQuery(int id, Database database)
+QSqlQuery* MysqlOperator::getQuery(QString id, Database database)
 {
     auto db = getDBByHost(id);
     auto query = new QSqlQuery(db);
@@ -97,7 +97,7 @@ QSqlQuery* MysqlOperator::getQuery(int id, Database database)
     return query;
 }
 
-QSqlDatabase MysqlOperator::getDatabase(int id)
+QSqlDatabase MysqlOperator::getDatabase(QString id)
 {
     return getDBByHost(id);
 }
@@ -112,7 +112,7 @@ QString MysqlOperator::lastError()
     return _lastError;
 }
 
-QSqlDatabase MysqlOperator::getDBByHost(int id)
+QSqlDatabase MysqlOperator::getDBByHost(QString id)
 {
     auto iter = _mapDatabase.find(id);
     if(iter == _mapDatabase.end())
@@ -124,19 +124,23 @@ QSqlDatabase MysqlOperator::getDBByHost(int id)
         iter = _mapDatabase.find(id);
     }
 
-    if(!iter->second.isOpen())
-    {
-        iter->second.open();
+    if(iter->second->createTime.secsTo(QDateTime::currentDateTime()) > 4 * 60 * 60) {
+        auto db = iter->second->db;
+        db.close();
+        db.open();
+        _mapDatabase[id] = new ConnectOption(db, QDateTime::currentDateTime());
+        return db;
+    } else {
+       return iter->second->db;
     }
-    return iter->second;
 }
 
-bool MysqlOperator::closeConnection(int id)
+bool MysqlOperator::closeConnection(QString id)
 {
     auto iter = _mapDatabase.find(id);
     if(iter != _mapDatabase.end())
     {
-        iter->second.close();
+        iter->second->db.close();
         _mapDatabase.erase(iter);
     }
     return true;

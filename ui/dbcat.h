@@ -18,22 +18,26 @@ public:
     void initWidgetSize();
 
 protected:
-    virtual void keyPressEvent(QKeyEvent *event);
+    virtual void keyPressEvent(QKeyEvent *event) override;
 
 private:
     void searchItems(const QString& text);
     void preSearchItem();
     void nextSearchItem();
+    void clipboardCopyData();
+    void initMenuBar();
 
 private slots:
     void slotLoadStyleSheet(const QString& file);
     void slotExec();
     void slotSearchText(const QString &text);
     void slotNewTables(QStringList);
+    void slotExit();
 
 private:
     Ui::DBcat *ui;
     QList<QTreeWidgetItem*> _lastSearchItems;
     int _searchIndex;
+    QAction *_copyHeader;
 };
 #endif // DBCAT_H
