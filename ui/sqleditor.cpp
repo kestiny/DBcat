@@ -167,13 +167,17 @@ QString SqlEditor::preprocessingSql()
 QString SqlEditor::currentWord()
 {
     auto cursor = textCursor();
+    QString text;
     while (cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor)) {
-        QString text = cursor.selectedText();
+        text = cursor.selectedText();
         if (text.contains(" ") || cursor.atBlockStart()) {
+            if(text.contains(".")) {
+                text = text.split(".").at(1);
+            }
             break;
         }
     }
-    return cursor.selectedText().simplified();
+    return text.simplified();
 }
 
 void SqlEditor::findTableNames()

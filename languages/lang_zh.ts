@@ -99,109 +99,114 @@
         <translation type="vanished">删除数据库</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="26"/>
+        <location filename="../ui/hosttreewidget.cpp" line="27"/>
         <source>open Connection</source>
         <translation>打开连接</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="27"/>
+        <location filename="../ui/hosttreewidget.cpp" line="28"/>
         <source>close Connection</source>
         <translation>关闭连接</translation>
     </message>
     <message>
         <location filename="../ui/hosttreewidget.cpp" line="29"/>
+        <source>edit Connection</source>
+        <translation type="unfinished">编辑连接</translation>
+    </message>
+    <message>
+        <location filename="../ui/hosttreewidget.cpp" line="31"/>
         <source>new Connection</source>
         <translation>新建连接</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="30"/>
+        <location filename="../ui/hosttreewidget.cpp" line="32"/>
         <source>del Connection</source>
         <translation>删除连接</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="33"/>
+        <location filename="../ui/hosttreewidget.cpp" line="35"/>
         <source>open Database</source>
         <translation>打开数据库</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="34"/>
+        <location filename="../ui/hosttreewidget.cpp" line="36"/>
         <source>close Database</source>
         <translation>关闭数据库</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="36"/>
+        <location filename="../ui/hosttreewidget.cpp" line="38"/>
         <source>create Database</source>
         <translation>创建数据库</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="37"/>
+        <location filename="../ui/hosttreewidget.cpp" line="39"/>
         <source>drop Database</source>
         <translation>删除数据库</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="40"/>
+        <location filename="../ui/hosttreewidget.cpp" line="42"/>
         <source>create table</source>
         <translation>新建表</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="41"/>
+        <location filename="../ui/hosttreewidget.cpp" line="43"/>
         <source>drop table</source>
         <translation>删除表</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="42"/>
+        <location filename="../ui/hosttreewidget.cpp" line="44"/>
         <source>delete table</source>
         <translation>清空表</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="235"/>
+        <location filename="../ui/hosttreewidget.cpp" line="244"/>
         <source>[OPEN TABLE] %1</source>
         <translation>[打开表] %1</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="292"/>
+        <location filename="../ui/hosttreewidget.cpp" line="301"/>
         <source>connect server:%1</source>
         <translation>连接服务器:%1</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="318"/>
+        <location filename="../ui/hosttreewidget.cpp" line="339"/>
         <source>[DELETE HOST] %1</source>
         <translation>[删除链接] %1</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="357"/>
-        <location filename="../ui/hosttreewidget.cpp" line="389"/>
+        <location filename="../ui/hosttreewidget.cpp" line="378"/>
         <location filename="../ui/hosttreewidget.cpp" line="410"/>
+        <location filename="../ui/hosttreewidget.cpp" line="431"/>
         <source>warning</source>
         <translation>请密切关注</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="357"/>
+        <location filename="../ui/hosttreewidget.cpp" line="378"/>
         <source>confirm drop database:</source>
         <translation>确认要删除数据库</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="369"/>
+        <location filename="../ui/hosttreewidget.cpp" line="390"/>
         <source>[DROP DATABASE] %1</source>
         <translation>[删除数据库] %1</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="389"/>
+        <location filename="../ui/hosttreewidget.cpp" line="410"/>
         <source>confirm drop table:</source>
         <translation>确认要删除表</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="400"/>
+        <location filename="../ui/hosttreewidget.cpp" line="421"/>
         <source>[DROP TABLE] %1</source>
         <translation>[删除表] %1</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="410"/>
+        <location filename="../ui/hosttreewidget.cpp" line="431"/>
         <source>confirm delete table&apos;s all data:</source>
         <translation>确认要清空表中所有数据</translation>
     </message>
     <message>
-        <location filename="../ui/hosttreewidget.cpp" line="417"/>
+        <location filename="../ui/hosttreewidget.cpp" line="438"/>
         <source>[DELETE TABLE] %1</source>
         <translation>[删除表] %1</translation>
     </message>
@@ -298,12 +303,12 @@
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../ui/newhost.cpp" line="16"/>
+        <location filename="../ui/newhost.cpp" line="17"/>
         <source>new cat wizard</source>
         <translation>新建连接向导</translation>
     </message>
     <message>
-        <location filename="../ui/newhost.cpp" line="35"/>
+        <location filename="../ui/newhost.cpp" line="56"/>
         <source>new mysql</source>
         <translation>新建Mysql</translation>
     </message>

@@ -4,6 +4,7 @@
 #include "operation/idboperator.h"
 #include "sqlresultcontroll.h"
 #include <QSqlQuery>
+#include "hosttreewidget.h"
 #include "messagebox.h"
 
 HostTreeWidget::HostTreeWidget(QWidget *parent/* = nullptr*/)
@@ -25,6 +26,7 @@ HostTreeWidget::HostTreeWidget(QWidget *parent/* = nullptr*/)
     _contextMenu = new QMenu();
     _actOpenCat = _contextMenu->addAction(QIcon(":/image/default/server.svg"), tr("open Connection"));
     _actCloseCat = _contextMenu->addAction(QIcon(":/image/default/server.svg"), tr("close Connection"));
+    _actEditCat = _contextMenu->addAction(QIcon(":/image/default/server.svg"), tr("edit Connection"));
     _contextMenu->addSeparator();
     _actNewCat = _contextMenu->addAction(QIcon(":/image/default/server.svg"), tr("new Connection"));
     _actDelCat = _contextMenu->addAction(QIcon(":/image/default/server.svg"), tr("del Connection"));
@@ -45,6 +47,7 @@ HostTreeWidget::HostTreeWidget(QWidget *parent/* = nullptr*/)
     connect(this, &QTreeWidget::currentItemChanged, this, &HostTreeWidget::slotItemChanged);
 
     connect(_actOpenCat, &QAction::triggered, this, &HostTreeWidget::slotOpenCat);
+    connect(_actEditCat, &QAction::triggered, this, &HostTreeWidget::slotEditCat);
     connect(_actCloseCat, &QAction::triggered, this, &HostTreeWidget::slotCloseCat);
     connect(_actNewCat, &QAction::triggered, this, &HostTreeWidget::slotNewCat);
     connect(_actDelCat, &QAction::triggered, this, &HostTreeWidget::slotDelCat);
@@ -121,6 +124,7 @@ void HostTreeWidget::addFileMenuAction(QMenu *meun)
 {
     meun->addAction(_actOpenCat);
     meun->addAction(_actCloseCat);
+    meun->addAction(_actEditCat);
 }
 
 void HostTreeWidget::showContextMenu(const QPoint &pos)
@@ -134,10 +138,12 @@ void HostTreeWidget::showContextMenu(const QPoint &pos)
         {
             _actOpenCat->setVisible(true);
             _actCloseCat->setVisible(true);
+            _actEditCat->setVisible(true);
             _actNewCat->setVisible(true);
             _actDelCat->setVisible(true);
             _actOpenCat->setDisabled(false);
             _actCloseCat->setDisabled(false);
+            _actEditCat->setDisabled(false);
             _actNewCat->setDisabled(false);
             _actDelCat->setDisabled(false);
 
@@ -155,6 +161,7 @@ void HostTreeWidget::showContextMenu(const QPoint &pos)
         {
             _actOpenCat->setDisabled(true);
             _actCloseCat->setDisabled(true);
+            _actEditCat->setDisabled(true);
             _actNewCat->setVisible(true);
             _actNewCat->setDisabled(false);
             _actDelCat->setDisabled(true);
@@ -178,6 +185,7 @@ void HostTreeWidget::showContextMenu(const QPoint &pos)
         {
             _actOpenCat->setDisabled(true);
             _actCloseCat->setDisabled(true);
+            _actEditCat->setDisabled(true);
             _actNewCat->setVisible(true);
             _actDelCat->setDisabled(true);
 
@@ -202,6 +210,7 @@ void HostTreeWidget::showContextMenu(const QPoint &pos)
     {
         _actOpenCat->setDisabled(true);
         _actCloseCat->setDisabled(true);
+        _actEditCat->setDisabled(true);
         _actNewCat->setVisible(true);
         _actNewCat->setDisabled(false);
         _actDelCat->setDisabled(true);
@@ -290,6 +299,18 @@ void HostTreeWidget::slotOpenCat(bool)
             pItem->addChild(item);
         }
         _resultControll->setMessage(tr("connect server:%1").arg(pItem->text(0)));
+    }
+}
+
+void HostTreeWidget::slotEditCat(bool) {
+    auto pItem = currentItem();
+    if (pItem && getItemType(pItem) == NodeType::HOST && pItem->childCount() == 0)
+    {
+        _currentHostId = getItemHostId(pItem);
+        HostInfo info = AppConfig::instance().findHost(_currentHostId);
+        NewHost* newHost = new NewHost(this);
+        newHost->setHostInfo(info);
+        newHost->exec();
     }
 }
 
