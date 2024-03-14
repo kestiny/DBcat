@@ -42,6 +42,7 @@ private slots:
    // connection operator
    void slotOpenCat(bool);
    void slotCloseCat(bool);
+   void slotEditCat(bool);
    void slotNewCat(bool);
    void slotDelCat(bool);
 
@@ -74,6 +75,7 @@ private:
    QMenu *_contextMenu;
    QAction *_actOpenCat;
    QAction *_actCloseCat;
+   QAction *_actEditCat;
    QAction *_actNewCat;
    QAction *_actDelCat;
 

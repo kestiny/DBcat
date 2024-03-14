@@ -6,6 +6,7 @@
 NewHost::NewHost(QWidget *parent)
     : QDialog(parent)
     ,ui(new Ui::NewHost)
+    ,hostInfo(nullptr)
 {
     ui->setupUi(this);
     setWindowFlag(Qt::FramelessWindowHint);
@@ -30,6 +31,26 @@ NewHost::NewHost(QWidget *parent)
     connect(ui->pushButtonCancel, &QPushButton::clicked, this, &NewHost::slotCancel);
 }
 
+void NewHost::setHostInfo(HostInfo info)
+{
+    hostInfo = new HostInfo();
+    hostInfo->id = info.id;
+    hostInfo->name = info.name;
+    hostInfo->host = info.host;
+    hostInfo->port = info.port;
+    hostInfo->userName = info.userName;
+    hostInfo->password = info.password;
+    hostInfo->sqlType = info.sqlType;
+
+    ui->lineEditName->setText(info.name);
+    ui->lineEditHost->setText(info.host);
+    ui->lineEditPort->setText(info.port);
+    ui->lineEditUserName->setText(info.userName);
+    ui->lineEditPassword->setText(info.sqlType);
+
+    slotCatMysql();
+}
+
 void NewHost::slotCatMysql()
 {
     ui->labelTitle->setText(tr("new mysql"));
@@ -49,17 +70,26 @@ void NewHost::slotSubmit()
     case 1: // mysql
     {
         HostInfo info;
-        info.id = "999";
         info.name = ui->lineEditName->text();
         info.host = ui->lineEditHost->text();
         info.port = ui->lineEditPort->text();
         info.userName = ui->lineEditUserName->text();
         info.password = ui->lineEditPassword->text();
-        info.sqlType = "MYSQL";
+        if(hostInfo != nullptr) {
+            info.id = hostInfo->id;
+            info.sqlType = hostInfo->sqlType;
 
-        AppConfig::instance().addHost(info);
+            AppConfig::instance().updateHost(info);
+        } else {
+            info.id = "999";
+            info.sqlType = "MYSQL";
+
+            AppConfig::instance().addHost(info);
+        }
     }
     }
+    delete hostInfo;
+    hostInfo = nullptr;
     accept();
 }
 

@@ -17,7 +17,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     appconfig.cpp \
-    operation/mysqldatamanager.cpp \
     operation/syntaxparser.cpp \
     ui/commenthighlighter.cpp \
     ui/hosttreewidget.cpp \
@@ -33,8 +32,6 @@ SOURCES += \
 
 HEADERS += \
     appconfig.h \
-    operation/idatamanager.h \
-    operation/mysqldatamanager.h \
     operation/syntaxparser.h \
     ui/commenthighlighter.h \
     ui/dbcat.h \

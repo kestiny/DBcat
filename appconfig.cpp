@@ -23,6 +23,24 @@ bool AppConfig::addHost(HostInfo info)
     return ret;
 }
 
+bool AppConfig::updateHost(HostInfo info)
+{
+    auto sqlQuery = getQuery();
+    sqlQuery.prepare("update hostInfo set name=?,host=?,port=?,userName=?,password=?,sqlType=? "
+                "where id=?");
+    sqlQuery.bindValue(0, info.name);
+    sqlQuery.bindValue(1, info.host);
+    sqlQuery.bindValue(2, info.port);
+    sqlQuery.bindValue(3, info.userName);
+    sqlQuery.bindValue(4, encrypt(info.password));
+    sqlQuery.bindValue(5, info.sqlType);
+    sqlQuery.bindValue(6, info.id);
+
+    bool ret =  sqlQuery.exec();
+    _strError = sqlQuery.lastError().text();
+    return ret;
+}
+
 std::list<HostInfo> AppConfig::listHosts()
 {
     auto sqlQuery = getQuery();

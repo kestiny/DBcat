@@ -14,6 +14,7 @@ public:
     }
 
     bool addHost(HostInfo);
+    bool updateHost(HostInfo);
     std::list<HostInfo> listHosts();
     HostInfo findHost(QString id);
     bool deleteHost(QString id);
