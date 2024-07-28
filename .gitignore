@@ -1,55 +1,48 @@
-# C++ objects and libs
-*.slo
-*.lo
-*.o
-*.a
-*.la
-*.lai
+# 忽略Python虚拟环境文件
+venv/
+.env
+*.env
+
+# 忽略Python缓存文件
+__pycache__/
+*.py[cod]
+
+# IPython Notebook的 checkpoints文件
+.ipynb_checkpoints
+
+# 忽略编辑器和IDE相关的临时和配置文件
+.vscode/
+.idea/
+*.sublime-workspace
+.project
+.classpath
+.cproject
+.settings/
+
+# 忽略编译后的字节码文件
+*.py[co]
 *.so
-*.so.*
-*.dll
-*.dylib
 
-# Qt-es
-object_script.*.Release
-object_script.*.Debug
-*_plugin_import.cpp
-/.qmake.cache
-/.qmake.stash
-*.pro.user
-*.pro.user.*
-*.qbs.user
-*.qbs.user.*
-*.moc
-moc_*.cpp
-moc_*.h
-qrc_*.cpp
-ui_*.h
-*.qmlc
-*.jsc
-Makefile*
-*build-*
-*.qm
-*.prl
+# 忽略Django和Flask等Web框架的特定文件
+db.sqlite3
+*.sqlite3
+db.sqlite
+*.log
+media/
+uploads/
 
-# Qt unit tests
-target_wrapper.*
+# 忽略测试产生的覆盖报告
+htmlcov/
+.tox/
+.coverage
+.coverage.*
 
-# QtCreator
-*.autosave
+# 忽略pip和conda的缓存
+**/__pycache__/
+**/.cache/
+**/*.egg-info/
+**/*.egg
+requirements.txt.lock
 
-# QtCreator Qml
-*.qmlproject.user
-*.qmlproject.user.*
-
-# QtCreator CMake
-CMakeLists.txt.user*
-
-# QtCreator 4.8< compilation database
-compile_commands.json
-
-# QtCreator local machine specific files for imported projects
-*creator.user*
-
-*_qmlcache.qrc
-vyeNNL.json
+# 忽略Jupyter Notebook生成的大量文件
+.ipynb_checkpoints/
