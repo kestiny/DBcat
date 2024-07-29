@@ -60,9 +60,9 @@ class SqlControllEdit():
     
     def get_value(self, obj):
         if isinstance(obj, datetime):
-            return '{}{}'.format(obj.strftime("%H:%M:%S"), ".{:03d}".format(obj.microsecond // 1000))
+            return '{}{}'.format(obj.strftime("%Y-%m-%d %H:%M:%S"), ".{:03d}".format(obj.microsecond // 1000))
         else:
-            return str(obj)
+            return '' if obj == None else str(obj)
         
     def exec_sql(self, id, db_name, sql):
         try:
