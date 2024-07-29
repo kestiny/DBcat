@@ -1,6 +1,7 @@
 from datetime import datetime
 from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtWidgets import QTableWidget, QTabBar, QTableWidgetItem
+from PyQt5.QtWidgets import QTableWidget, QTabBar, QTableView
+from PyQt5.QtCore import Qt, QModelIndex, QAbstractTableModel, QVariant
 
 from src.dbOperator import DBOperator
 
@@ -48,13 +49,8 @@ class SqlControllEdit():
             self.set_msg(headers)
 
     def add_tab(self, name, records, headers, type):
-        tableWidget = QTableWidget()
-        tableWidget.setColumnCount(len(headers))
-        tableWidget.setRowCount(len(records))
-        tableWidget.setHorizontalHeaderLabels(headers)
-        for row,record in enumerate(records):
-            for column, value in enumerate(record):
-                tableWidget.setItem(row, column, QTableWidgetItem(self.get_value(value)))
+        tableWidget = QTableView()
+        self.fill_table_widget(tableWidget, records, headers)
         index = self.tabWidget.addTab(tableWidget, self.icon_index if type == 'INDEX' else self.icon_table, name)
         self.tabWidget.setCurrentIndex(index)
     
@@ -76,12 +72,45 @@ class SqlControllEdit():
             self.set_msg(f'[ERROR]: {e}')
 
     def fill_result(self, records, headers):
-        tableWidget = self.tabWidget.widget(1)
-        tableWidget.setColumnCount(len(headers))
-        tableWidget.setRowCount(len(records))
-        tableWidget.setHorizontalHeaderLabels(headers)
-        for row,record in enumerate(records):
-            for column, value in enumerate(record):
-                tableWidget.setItem(row, column, QTableWidgetItem(self.get_value(value)))
+        tableView = QTableView()
+        self.fill_table_widget(tableView, records, headers) 
+        self.tabWidget.removeTab(1)
+        self.tabWidget.insertTab(1, tableView, self.icon_table, "Result")
+        self.tabWidget.tabBar().setTabButton(1, QTabBar.RightSide, None)
         self.tabWidget.setCurrentIndex(1)
+
+    def fill_table_widget(self, view, records, headers):
+        # 创建模型
+        model = MyTableModel(records, headers)
+        view.setModel(model)
+        view.resizeColumnsToContents()
+        view.resizeRowsToContents()
+
+class MyTableModel(QAbstractTableModel):
+    def __init__(self, data, header):
+        super().__init__()
+        self._data = data
+        self._header = header
+
+    def rowCount(self, parent=QModelIndex()):
+        return len(self._data)
+
+    def columnCount(self, parent=QModelIndex()):
+        return len(self._data[0]) if self._data else 0
+
+    def data(self, index, role=Qt.DisplayRole):
+        if role == Qt.DisplayRole:
+            row = index.row()
+            col = index.column()
+            return str(self._data[row][col])
+
+        return QVariant()
+
+    def headerData(self, section, orientation, role=Qt.DisplayRole):
+        if role == Qt.DisplayRole:
+            if orientation == Qt.Horizontal:
+                return self._header[section]
+            elif orientation == Qt.Vertical:
+                return f"{section}"
+        return QVariant()
     

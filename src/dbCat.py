@@ -81,7 +81,7 @@ class DBCat(QtWidgets.QMainWindow):
         self.textEditMessage.setObjectName("textEditMessage")
         self.verticalLayout_4.addWidget(self.textEditMessage)
         self.sqlControll.addTab(self.tabMessage, "")
-        self.tab_2 = QtWidgets.QTableWidget()
+        self.tab_2 = QtWidgets.QTableView()
         self.tab_2.setObjectName("tab_2")
         self.sqlControll.addTab(self.tab_2, "")
         self.horizontalLayout.addWidget(self.splitter_2)
