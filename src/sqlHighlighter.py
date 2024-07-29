@@ -22,8 +22,9 @@ class SqlHighlighter(QtGui.QSyntaxHighlighter):
         self.commentFormat = QtGui.QTextCharFormat()
         self.commentFormat.setForeground(QtCore.Qt.gray)
 
-        self.commentExpression = QtCore.QRegularExpression("(#|--)[^\n]*")
-
+        comment = '#|--'
+        self.commentExpression = QtCore.QRegularExpression("({})[^\n]*".format(comment))
+        self.commentExp = QtCore.QRegExp("^\\s*({})".format(comment))
         self.syntaxFormat = QtGui.QTextCharFormat()
         self.syntaxFormat.setForeground(QtCore.Qt.blue)
         self.syntaxFormat.setFontWeight(QtGui.QFont.Bold)
@@ -40,3 +41,6 @@ class SqlHighlighter(QtGui.QSyntaxHighlighter):
         while matchIterator.hasNext():
             match = matchIterator.next()
             self.setFormat(match.capturedStart(), match.capturedLength(), self.commentFormat)
+
+    def is_comment(self, text):
+        return self.commentExp.indexIn(text) != -1

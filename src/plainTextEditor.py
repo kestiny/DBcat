@@ -2,7 +2,7 @@
 https://doc.qt.io/qt-5/qtwidgets-widgets-PlainTextEditor-example.html#the-linenumberarea-class
 https://doc.qt.io/qtforpython/examples/example_widgets__PlainTextEditor.html
 """
-
+import unicodedata
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from src.sqlHighlighter import SqlHighlighter
@@ -265,4 +265,21 @@ class PlainTextEditor(CodeTextEdit):
         return self.toPlainText()
 
     def selections(self):
-        return self.textCursor().selectedText()
+        selectionText =  self.textCursor().selectedText()
+        contentText = []
+
+        # 段落分隔符 (Zp) 替换为换行符
+        result = ""
+        for char in selectionText:
+            if unicodedata.category(char) == 'Zp':
+                result += '\n'
+            else:
+                result += char
+
+        for text in result.split('\n'):
+            text = text.strip()
+            if not text or self.sqlHighlighter.is_comment(text):
+                continue
+            else:
+                contentText.append(text)
+        return ' '.join(contentText)
