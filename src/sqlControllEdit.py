@@ -1,6 +1,6 @@
 from datetime import datetime
 from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtWidgets import QTableWidget, QTabBar, QTableView
+from PyQt5.QtWidgets import  QTabBar, QTableView
 from PyQt5.QtCore import Qt, QModelIndex, QAbstractTableModel, QVariant
 
 from src.dbOperator import DBOperator
@@ -53,18 +53,12 @@ class SqlControllEdit():
         self.fill_table_widget(tableWidget, records, headers)
         index = self.tabWidget.addTab(tableWidget, self.icon_index if type == 'INDEX' else self.icon_table, name)
         self.tabWidget.setCurrentIndex(index)
-    
-    def get_value(self, obj):
-        if isinstance(obj, datetime):
-            return '{}{}'.format(obj.strftime("%Y-%m-%d %H:%M:%S"), ".{:03d}".format(obj.microsecond // 1000))
-        else:
-            return '' if obj == None else str(obj)
-        
+
     def exec_sql(self, id, db_name, sql):
         try:
             records, headers = DBOperator().do_exec_statement(id, db_name, sql)
             if records is not None:
-                self.set_msg('[exec success]: {}'.format(sql))
+                self.set_msg('[exec success]: {}, [result rows]: {}'.format(sql, len(records)))
                 self.fill_result(records, headers)
             else:
                 self.set_msg(headers)
@@ -72,19 +66,15 @@ class SqlControllEdit():
             self.set_msg(f'[ERROR]: {e}')
 
     def fill_result(self, records, headers):
-        tableView = QTableView()
-        self.fill_table_widget(tableView, records, headers) 
-        self.tabWidget.removeTab(1)
-        self.tabWidget.insertTab(1, tableView, self.icon_table, "Result")
-        self.tabWidget.tabBar().setTabButton(1, QTabBar.RightSide, None)
+        tableView = self.tabWidget.widget(1)
+        self.fill_table_widget(tableView, records, headers)
         self.tabWidget.setCurrentIndex(1)
 
     def fill_table_widget(self, view, records, headers):
         # 创建模型
         model = MyTableModel(records, headers)
         view.setModel(model)
-        view.resizeColumnsToContents()
-        view.resizeRowsToContents()
+        view.setSortingEnabled(True)
 
 class MyTableModel(QAbstractTableModel):
     def __init__(self, data, header):
@@ -96,13 +86,13 @@ class MyTableModel(QAbstractTableModel):
         return len(self._data)
 
     def columnCount(self, parent=QModelIndex()):
-        return len(self._data[0]) if self._data else 0
+        return len(self._header)
 
     def data(self, index, role=Qt.DisplayRole):
         if role == Qt.DisplayRole:
             row = index.row()
             col = index.column()
-            return str(self._data[row][col])
+            return '' if not self._data[row][col] else str(self._data[row][col])
 
         return QVariant()
 
