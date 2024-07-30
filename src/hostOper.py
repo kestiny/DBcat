@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 import json
 
@@ -25,6 +26,10 @@ def hosts_from_json(hosts_json):
 class HostOper(metaclass=Singleton):
     def __init__(self) -> None:
         self.hosts = []
+        if not os.path.exists(dbcat_setting_file):
+            with open(dbcat_setting_file, 'w') as file:
+                json.dump(hosts_to_json(self.hosts), file)
+                
         with open(dbcat_setting_file, 'r') as file:
             try:
                 hosts = hosts_from_json(json.load(file))
