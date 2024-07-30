@@ -89,7 +89,7 @@ class HostTree():
             if node == HostTree.HOST:
                 item.setIcon(0, QIcon('image/{}.svg'.format(type)))
             elif node == HostTree.DATABASE:
-                item.setIcon(0, QIcon('image/database_open.png'))
+                item.setIcon(0, QIcon('image/database.svg'))
             elif node == HostTree.TABLE:
                 item.setIcon(0, QIcon('image/table.svg'))
 
