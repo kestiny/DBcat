@@ -46,3 +46,7 @@ requirements.txt.lock
 
 # 忽略Jupyter Notebook生成的大量文件
 .ipynb_checkpoints/
+
+# 忽略PyInstaller生成的大量文件
+build/
+dist/
