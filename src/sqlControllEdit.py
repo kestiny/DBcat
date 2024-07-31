@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import  QTabBar, QTableView
 from PyQt5.QtCore import Qt, QModelIndex, QAbstractTableModel, QVariant
 
 from src.dbOperator import DBOperator
+from src import dbcat_resource
 
 class SqlControllEdit():
     def __init__(self, tabWidget, sqlMessage):
@@ -19,12 +20,12 @@ class SqlControllEdit():
         self.tabWidget.tabBar().setTabButton(0, QTabBar.RightSide, None)
         self.tabWidget.tabBar().setTabButton(1, QTabBar.RightSide, None)
         self.tabWidget.setCurrentIndex(0)
-        self.tabWidget.setTabIcon(0, QIcon("image/msg.svg"))
-        self.tabWidget.setTabIcon(1, QIcon("image/result.svg"))
+        self.tabWidget.setTabIcon(0, QIcon(dbcat_resource.resource_path("image/msg.svg")))
+        self.tabWidget.setTabIcon(1, QIcon(dbcat_resource.resource_path("image/result.svg")))
         self.tabWidget.tabCloseRequested.connect(self.tab_close)
 
-        self.icon_table = QIcon("image/table.svg")
-        self.icon_index = QIcon("image/index.svg")
+        self.icon_table = QIcon(dbcat_resource.resource_path("image/table.svg"))
+        self.icon_index = QIcon(dbcat_resource.resource_path("image/index.svg"))
     
     def tab_close(self, index):
         self.tabWidget.removeTab(index)

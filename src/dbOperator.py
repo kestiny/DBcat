@@ -50,10 +50,10 @@ class DBOperator(metaclass=Singleton):
         else:
             return None, "error: 数据库链接未打开"
 
-    def database(self, id):
-        connection = self.__conns.get(id, None)
+    def database(self, host_info):
+        connection = self.__conns.get(host_info.id, None)
         if connection is None or connection.is_connected() == False:
-            connection, msg = self.connection(id)
+            connection, msg = self.connection(host_info)
             if connection is None:
                 return None, msg
 
@@ -70,9 +70,7 @@ class DBOperator(metaclass=Singleton):
     def tables(self, id, database):
         connection = self.__conns.get(id, None)
         if connection is None or connection.is_connected() == False:
-            connection, msg = self.connection(id)
-            if connection is None:
-                return None, msg
+            return None, 'error: 数据库链接未打开'
 
         if connection is not None:
             try:
@@ -83,10 +81,9 @@ class DBOperator(metaclass=Singleton):
                 return [record[0] for record in records], ''
             finally:
                 cursor.close()
-        return None, 'failure'
+        return None, 'error: 数据库链接未打开'
     
-    def connection(self, id):
-        host_info = HostOper().find_host(id)
+    def connection(self, host_info):
         if host_info is not None:
             try:
                 # 创建连接
@@ -99,7 +96,7 @@ class DBOperator(metaclass=Singleton):
                 )
 
                 if connection.is_connected():
-                    self.__conns[id] = connection
+                    self.__conns[host_info.id] = connection
                     return connection, '[Connected to MySQL Server version:{}] {}:{}'.format(connection.get_server_info(),host_info.host,host_info.port)
                 else:
                     return None, 'Error while connecting to MySQL:{}, open failure'.format(host_info.host)

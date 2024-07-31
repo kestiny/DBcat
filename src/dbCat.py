@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-from pathlib import Path
 from PyQt5 import QtWidgets, QtCore, QtGui
 
 from src.sqlEditor import SqlEditor
@@ -8,11 +7,7 @@ from src.hostTree import HostTree
 from src.hostEditDialog import HostEditDialog
 from src.sqlControllEdit import SqlControllEdit
 from src.dbOperator import DBOperator
-
-# 获取当前用户的文档目录
-dbcat_path = Path.home() / "Documents" / "DBCat"
-if not os.path.exists(dbcat_path / 'sql'):
-    os.makedirs(dbcat_path / 'sql')
+from src import dbcat_resource
 
 class DBCat(QtWidgets.QMainWindow):
     """主窗口"""
@@ -23,6 +18,9 @@ class DBCat(QtWidgets.QMainWindow):
     def setupUi(self, DBcat):
         DBcat.setObjectName("DBcat")
         DBcat.resize(1187, 668)
+        DBcat.setWindowTitle("DBCat")
+        DBcat.setWindowIcon(QtGui.QIcon(dbcat_resource.resource_path('image/title.svg')))
+
         self.centralwidget = QtWidgets.QWidget(DBcat)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralwidget)
@@ -91,9 +89,9 @@ class DBCat(QtWidgets.QMainWindow):
         self.splitter_2.setStretchFactor(1, 3)
 
         # action init
-        newConnect = QtWidgets.QAction(QtGui.QIcon('image/connect.svg'), 'New Connect', self)
-        newSql = QtWidgets.QAction(QtGui.QIcon('image/newsql.svg'), 'New Sql', self)
-        execSql = QtWidgets.QAction(QtGui.QIcon('image/run.svg'), 'Run Sql', self)
+        newConnect = QtWidgets.QAction(QtGui.QIcon(dbcat_resource.resource_path('image/connect.svg')), 'New Connect', self)
+        newSql = QtWidgets.QAction(QtGui.QIcon(dbcat_resource.resource_path('image/newsql.svg')), 'New Sql', self)
+        execSql = QtWidgets.QAction(QtGui.QIcon(dbcat_resource.resource_path('image/run.svg')), 'Run Sql', self)
         execSql.setToolTip("运行(F9)")
         execSql.setShortcut("F9")
 
@@ -141,3 +139,6 @@ class DBCat(QtWidgets.QMainWindow):
         dialog = HostEditDialog()
         if QtWidgets.QDialog.Accepted == dialog.exec():
             self.sqlHostTreeWidget.add_host(dialog.get_host())
+
+    def image_path(self, file_path):
+        return os.path.abspath(os.path.join(os.path.dirname(__file__), file_path))
