@@ -6,9 +6,7 @@ from PyQt5.QtGui import QIcon, QCursor, QFont
 from src.hostOper import HostOper
 from src.hostEditDialog import HostEditDialog
 from src.dbOperator import DBOperator
-
-# 获取当前用户的文档目录
-host_path = Path.home() / "Documents" / "DBCat" / ".host"
+from src import dbcat_resource
 
 class HostTree():
     '''节点类型定义(常量)'''
@@ -34,7 +32,7 @@ class HostTree():
         self.sqlTreeWidget.customContextMenuRequested.connect(self.showContextMenu)
         self.sqlTreeWidget.itemDoubleClicked.connect(self.itemDoubleClicked)
 
-        self.hostOper = HostOper()
+        self.hostOper = HostOper(dbcat_resource.dbcat_setting_file())
         self.initHost()
         self.init_menu()
 
@@ -87,11 +85,11 @@ class HostTree():
             item.setData(0, Qt.UserRole + 999, node)
 
             if node == HostTree.HOST:
-                item.setIcon(0, QIcon('image/{}.svg'.format(type)))
+                item.setIcon(0, QIcon(dbcat_resource.resource_path('image/{}.svg'.format(type))))
             elif node == HostTree.DATABASE:
-                item.setIcon(0, QIcon('image/database.svg'))
+                item.setIcon(0, QIcon(dbcat_resource.resource_path('image/database.svg')))
             elif node == HostTree.TABLE:
-                item.setIcon(0, QIcon('image/table.svg'))
+                item.setIcon(0, QIcon(dbcat_resource.resource_path('image/table.svg')))
 
     def getItemType(self, item):
         if item is not None:
@@ -102,25 +100,25 @@ class HostTree():
     def init_menu(self):
         self.contextMenu = QMenu()
         # connect action
-        self.actEditConn = self.contextMenu.addAction(QIcon("image/edit.svg"), "edit Connection")
+        self.actEditConn = self.contextMenu.addAction(QIcon(dbcat_resource.resource_path("image/edit.svg")), "edit Connection")
         self.actEditConn.triggered.connect(self.edit_conn)
-        self.actDelConn = self.contextMenu.addAction(QIcon("image/delete.svg"), "del Connection")
+        self.actDelConn = self.contextMenu.addAction(QIcon(dbcat_resource.resource_path("image/delete.svg")), "del Connection")
         self.actDelConn.triggered.connect(self.del_conn)
-        self.actCloseConn = self.contextMenu.addAction(QIcon("image/database_close.svg"), "close Connection")
+        self.actCloseConn = self.contextMenu.addAction(QIcon(dbcat_resource.resource_path("image/database_close.svg")), "close Connection")
         self.actCloseConn.triggered.connect(self.close_conn)
         # database action
-        self.actCloseDB = self.contextMenu.addAction(QIcon("image/edit.svg"), "close database")
+        self.actCloseDB = self.contextMenu.addAction(QIcon(dbcat_resource.resource_path("image/edit.svg")), "close database")
         self.actCloseDB.triggered.connect(self.close_database)
-        self.actCreateDB = self.contextMenu.addAction(QIcon("image/newsql.svg"), "create database")
+        self.actCreateDB = self.contextMenu.addAction(QIcon(dbcat_resource.resource_path("image/newsql.svg")), "create database")
         self.actCreateDB.triggered.connect(self.create_database)
-        self.actDropDB = self.contextMenu.addAction(QIcon("image/delete.svg"), "drop database")
+        self.actDropDB = self.contextMenu.addAction(QIcon(dbcat_resource.resource_path("image/delete.svg")), "drop database")
         self.actDropDB.triggered.connect(self.drop_databse)
         # table action
-        self.actIndexTable = self.contextMenu.addAction(QIcon("image/index.svg"), "view index")
+        self.actIndexTable = self.contextMenu.addAction(QIcon(dbcat_resource.resource_path("image/index.svg")), "view index")
         self.actIndexTable.triggered.connect(self.show_index)
-        self.actDeleteData = self.contextMenu.addAction(QIcon("image/delete.svg"), "delete data")
+        self.actDeleteData = self.contextMenu.addAction(QIcon(dbcat_resource.resource_path("image/delete.svg")), "delete data")
         self.actDeleteData.triggered.connect(self.delete_data)
-        self.actDropTable = self.contextMenu.addAction(QIcon("image/delete.svg"), "drop table")
+        self.actDropTable = self.contextMenu.addAction(QIcon(dbcat_resource.resource_path("image/delete.svg")), "drop table")
         self.actDropTable.triggered.connect(self.drop_data)
 
     def edit_conn(self):
@@ -144,7 +142,7 @@ class HostTree():
         item = self.sqlTreeWidget.currentItem()
         if self.getItemType(item) == HostTree.HOST:
             item.takeChildren()
-            DBOperator().release_connection(self.getItemHostId(item))
+            DBOperator().release_connection(self.getItemHost(item))
 
     def close_database(self):
         item = self.sqlTreeWidget.currentItem()
@@ -231,7 +229,7 @@ class HostTree():
             childCount = item.childCount()
             if node_type == HostTree.HOST and childCount == 0:
                 # 打开连接
-                databases, msg = DBOperator().database(id)
+                databases, msg = DBOperator().database(self.getItemHost(item))
                 self.sqlControllWidget.set_msg('connect to:{} {}'.format(item.text(0), msg))
                 for db in databases:
                     item.addChild(self.create_clild_item(db, id, HostTree.DATABASE))

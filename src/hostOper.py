@@ -1,10 +1,6 @@
-import os
-from pathlib import Path
 import json
 
 from src.hostInfo import HostInfo
-
-dbcat_setting_file = Path.home() / "Documents" / "DBCat" / ".conn"
 
 class Singleton(type):
     _instances = {}
@@ -13,7 +9,7 @@ class Singleton(type):
         if cls not in cls._instances:
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
-    
+
 # 数组的序列化和反序列化
 def hosts_to_json(hosts):
     """将HostInfo对象数组转换为字典数组"""
@@ -24,13 +20,10 @@ def hosts_from_json(hosts_json):
     return [HostInfo.from_json(host) for host in hosts_json]
 
 class HostOper(metaclass=Singleton):
-    def __init__(self) -> None:
+    def __init__(self, setting_file) -> None:
         self.hosts = []
-        if not os.path.exists(dbcat_setting_file):
-            with open(dbcat_setting_file, 'w') as file:
-                json.dump(hosts_to_json(self.hosts), file)
-                
-        with open(dbcat_setting_file, 'r') as file:
+        self.dbcat_setting_file = setting_file
+        with open(self.dbcat_setting_file, 'r') as file:
             try:
                 hosts = hosts_from_json(json.load(file))
                 self.hosts = sorted(hosts, key=lambda x: x.id)
@@ -78,5 +71,5 @@ class HostOper(metaclass=Singleton):
 
     def save_hosts_to_file(self):
         print("save_hosts_to_file")
-        with open(dbcat_setting_file, 'w') as file:
+        with open(self.dbcat_setting_file, 'w') as file:
             json.dump(hosts_to_json(self.hosts), file)

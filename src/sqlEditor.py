@@ -2,9 +2,7 @@ from pathlib import Path
 from PyQt5 import QtCore
 
 from src.plainTextEditor import PlainTextEditor
-
-# 获取当前用户的文档目录
-dbcat_path = Path.home() / "Documents" / "DBCat"
+from src import dbcat_resource
 
 class SqlEditor():
     def __init__(self, sqlEditor):
@@ -22,7 +20,7 @@ class SqlEditor():
         return self.sqlEditor.currentWidget().selections()
 
     def loadFiles(self):
-        directory_path = Path(dbcat_path / 'sql')
+        directory_path = dbcat_resource.sql_dir()
         files_list = [file for file in directory_path.glob('**/*') if file.is_file()]
         return [file for file in files_list if file.suffix == '.sql']
 
@@ -39,7 +37,7 @@ class SqlEditor():
                 self.sqlEditor.addTab(sqlCode, Path(file).stem)
 
     def saveFiles(self):
-        directory_path = Path(dbcat_path / 'sql')
+        directory_path = dbcat_resource.sql_dir()
         # 获取所有tab页
         for i in range(self.sqlEditor.count()):
             with open(directory_path / (self.sqlEditor.tabText(i) + '.sql'), 'w') as file:
@@ -57,7 +55,7 @@ class SqlEditor():
     def tabClose(self, index:int):
         name = self.sqlEditor.tabText(index)
         self.sqlEditor.removeTab(index)
-        file = Path(dbcat_path / 'sql') / (name + '.sql')
+        file = dbcat_resource.sql_dir() / (name + '.sql')
         # 使用unlink()方法删除文件， unlink(missing_ok=True) 可以避免 FileNotFoundError 异常
         try:
             file.unlink(missing_ok=True)
