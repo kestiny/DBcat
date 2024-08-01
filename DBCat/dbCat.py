@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
-import os
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from src.sqlEditor import SqlEditor
-from src.hostTree import HostTree
-from src.hostEditDialog import HostEditDialog
-from src.sqlControllEdit import SqlControllEdit
-from src.dbOperator import DBOperator
-from src import dbcat_resource
+from DBCat import sql_editor
+from DBCat.hosts import host_tree
+from DBCat.hosts import host_edit_dialog
+from DBCat import sql_control_edit
+from DBCat.dboperator import mysql_operator
+from DBCat import resource as res
+
 
 class DBCat(QtWidgets.QMainWindow):
     """主窗口"""
-    def __init__(self, parent = None):
+
+    def __init__(self, parent=None):
         super(DBCat, self).__init__(parent)
         self.setupUi(self)
 
@@ -19,7 +20,7 @@ class DBCat(QtWidgets.QMainWindow):
         DBcat.setObjectName("DBcat")
         DBcat.resize(1187, 668)
         DBcat.setWindowTitle("DBCat")
-        DBcat.setWindowIcon(QtGui.QIcon(dbcat_resource.resource_path('image/title.svg')))
+        DBcat.setWindowIcon(QtGui.QIcon(res.resource_path('image/title.svg')))
 
         self.centralwidget = QtWidgets.QWidget(DBcat)
         self.centralwidget.setObjectName("centralwidget")
@@ -89,9 +90,10 @@ class DBCat(QtWidgets.QMainWindow):
         self.splitter_2.setStretchFactor(1, 3)
 
         # action init
-        newConnect = QtWidgets.QAction(QtGui.QIcon(dbcat_resource.resource_path('image/connect.svg')), 'New Connect', self)
-        newSql = QtWidgets.QAction(QtGui.QIcon(dbcat_resource.resource_path('image/newsql.svg')), 'New Sql', self)
-        execSql = QtWidgets.QAction(QtGui.QIcon(dbcat_resource.resource_path('image/run.svg')), 'Run Sql', self)
+        newConnect = QtWidgets.QAction(QtGui.QIcon(res.resource_path('image/connect.svg')), 'New Connect',
+                                       self)
+        newSql = QtWidgets.QAction(QtGui.QIcon(res.resource_path('image/newsql.svg')), 'New Sql', self)
+        execSql = QtWidgets.QAction(QtGui.QIcon(res.resource_path('image/run.svg')), 'Run Sql', self)
         execSql.setToolTip("运行(F9)")
         execSql.setShortcut("F9")
 
@@ -110,9 +112,9 @@ class DBCat(QtWidgets.QMainWindow):
         QtCore.QMetaObject.connectSlotsByName(DBcat)
 
         # 初始化sql代码编辑器
-        self.sqlTabEdit = SqlEditor(self.sqlEdit)
-        self.sqlControllEdit = SqlControllEdit(self.sqlControll, self.textEditMessage)
-        self.sqlHostTreeWidget = HostTree(self.hostWidget, self.sqlControllEdit)
+        self.sqlTabEdit = sql_editor.SqlEditor(self.sqlEdit)
+        self.sqlControllEdit = sql_control_edit.SqlControlEdit(self.sqlControll, self.textEditMessage)
+        self.sqlHostTreeWidget = host_tree.HostTree(self.hostWidget, self.sqlControllEdit)
 
     def do_exec_sql(self):
         sql = self.sqlTabEdit.selections()
@@ -127,7 +129,7 @@ class DBCat(QtWidgets.QMainWindow):
 
     def closeEvent(self, event):
         self.sqlTabEdit.saveFiles()
-        DBOperator().release_connections()
+        mysql_operator.MysqlOperator().release_connections()
 
     def newSqlEdit(self):
         text, ok = QtWidgets.QInputDialog.getText(self, '新建查询', '请输入新查询名称:')
@@ -136,9 +138,6 @@ class DBCat(QtWidgets.QMainWindow):
             self.sqlTabEdit.newSqlEdit(text)
 
     def new_conn_edit(self):
-        dialog = HostEditDialog()
+        dialog = host_edit_dialog.HostEditDialog()
         if QtWidgets.QDialog.Accepted == dialog.exec():
             self.sqlHostTreeWidget.add_host(dialog.get_host())
-
-    def image_path(self, file_path):
-        return os.path.abspath(os.path.join(os.path.dirname(__file__), file_path))

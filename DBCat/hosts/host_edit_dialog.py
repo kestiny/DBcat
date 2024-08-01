@@ -1,15 +1,17 @@
+# -*- coding: utf-8 -*-
 from PyQt5 import QtCore, QtWidgets
-from src.hostInfo import HostInfo
+from DBCat.hosts import host_info
+
 
 class HostEditDialog(QtWidgets.QDialog):
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         super(HostEditDialog, self).__init__(parent)
-        self.id =''
+        self.id = ''
         self.setupUi(self)
 
     def get_host(self):
-        return HostInfo(self.id, self.name.text(), self.host.text(), self.port.text(), self.userName.text(),
-                        self.password.text(), self.type.text(), self.env.currentText())
+        return host_info.HostInfo(self.id, self.name.text(), self.host.text(), self.port.text(), self.userName.text(),
+                                 self.password.text(), self.type.text(), self.env.currentText())
 
     def init_with_host(self, host):
         print('init dialog with host:{}'.format(host.to_json()))
@@ -17,7 +19,7 @@ class HostEditDialog(QtWidgets.QDialog):
         self.name.setText(host.name)
         self.host.setText(host.host)
         self.port.setText(host.port)
-        self.userName.setText(host.userName)
+        self.userName.setText(host.user_name)
         self.password.setText(host.password)
         self.type.setText(host.type)
         self.env.setCurrentText(host.environment)
@@ -123,7 +125,7 @@ class HostEditDialog(QtWidgets.QDialog):
         self.type.setText("mysql")
         self.env.addItem('测试')
         self.env.addItem('生产')
-        
+
         QtCore.QMetaObject.connectSlotsByName(HostEditDialog)
         self.pushButtonOk.clicked.connect(self.save)
         self.pushButtonCancel.clicked.connect(self.cancel)

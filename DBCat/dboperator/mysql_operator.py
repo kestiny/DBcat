@@ -1,7 +1,7 @@
+# -*- coding: utf-8 -*-
 import mysql.connector
 from mysql.connector import Error
 
-from src.hostOper import HostOper
 
 class Singleton(type):
     _instances = {}
@@ -11,7 +11,8 @@ class Singleton(type):
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
 
-class DBOperator(metaclass=Singleton):
+
+class MysqlOperator(metaclass=Singleton):
     def __init__(self):
         self.__conns = {}
         self.data = "Hello, World!"
@@ -66,7 +67,7 @@ class DBOperator(metaclass=Singleton):
             finally:
                 cursor.close()
         return None, 'failure'
-    
+
     def tables(self, id, database):
         connection = self.__conns.get(id, None)
         if connection is None or connection.is_connected() == False:
@@ -82,7 +83,7 @@ class DBOperator(metaclass=Singleton):
             finally:
                 cursor.close()
         return None, 'error: 数据库链接未打开'
-    
+
     def connection(self, host_info):
         if host_info is not None:
             try:
@@ -90,14 +91,15 @@ class DBOperator(metaclass=Singleton):
                 connection = mysql.connector.connect(
                     host=host_info.host,
                     port=host_info.port,
-                    user=host_info.userName,
+                    user=host_info.user_name,
                     password=host_info.password,
                     ssl_disabled=True
                 )
 
                 if connection.is_connected():
                     self.__conns[host_info.id] = connection
-                    return connection, '[Connected to MySQL Server version:{}] {}:{}'.format(connection.get_server_info(),host_info.host,host_info.port)
+                    return connection, '[Connected to MySQL Server version:{}] {}:{}'.format(
+                        connection.get_server_info(), host_info.host, host_info.port)
                 else:
                     return None, 'Error while connecting to MySQL:{}, open failure'.format(host_info.host)
             except Error as e:
