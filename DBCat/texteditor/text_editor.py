@@ -5,9 +5,8 @@ https://doc.qt.io/qtforpython/examples/example_widgets__PlainTextEditor.html
 import unicodedata
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from src.sqlHighlighter import SqlHighlighter
+from DBCat.texteditor import sql_highlighter
 
-DARK_BLUE = QtGui.QColor(118, 150, 185)
 
 class LineNumberArea(QtWidgets.QWidget):
     def __init__(self, editor):
@@ -104,13 +103,13 @@ class CodeTextEdit(QtWidgets.QPlainTextEdit):
         # indent event
         if event.key() == QtCore.Qt.Key_Tab and \
                 (end_line - start_line):
-            lines = range(start_line, end_line+1)
+            lines = range(start_line, end_line + 1)
             self.indented.emit(lines)
             return
 
         # un-indent event
         elif event.key() == QtCore.Qt.Key_Backtab:
-            lines = range(start_line, end_line+1)
+            lines = range(start_line, end_line + 1)
             self.unindented.emit(lines)
             return
 
@@ -174,10 +173,13 @@ class CodeTextEdit(QtWidgets.QPlainTextEdit):
             pass
 
 
-class PlainTextEditor(CodeTextEdit):
+class TextEditor(CodeTextEdit):
+    """
+    text editor Impl
+    """
     def __init__(self):
-        super(PlainTextEditor, self).__init__()
-        self.sqlHighlighter = SqlHighlighter(self.document())
+        super(TextEditor, self).__init__()
+        self.sqlHighlighter = sql_highlighter.SqlHighlighter(self.document())
         self.line_number_area = LineNumberArea(self)
 
         self.font = QtGui.QFont()
@@ -207,14 +209,14 @@ class PlainTextEditor(CodeTextEdit):
         return space
 
     def resizeEvent(self, e):
-        super(PlainTextEditor, self).resizeEvent(e)
+        super(TextEditor, self).resizeEvent(e)
         cr = self.contentsRect()
         width = self.line_number_area_width()
         rect = QtCore.QRect(cr.left(), cr.top(), width, cr.height())
         self.line_number_area.setGeometry(rect)
 
     def highlightCurrentLine(self):
-        extraSelections = list()
+        extra_selections = list()
 
         if not self.isReadOnly():
             selection = QtWidgets.QTextEdit.ExtraSelection()
@@ -223,9 +225,9 @@ class PlainTextEditor(CodeTextEdit):
             selection.format.setProperty(QtGui.QTextFormat.FullWidthSelection, True)
             selection.cursor = self.textCursor()
             selection.cursor.clearSelection()
-            extraSelections.append(selection)
+            extra_selections.append(selection)
 
-        self.setExtraSelections(extraSelections)
+        self.setExtraSelections(extra_selections)
 
     def lineNumberAreaPaintEvent(self, event):
         painter = QtGui.QPainter(self.line_number_area)
@@ -238,7 +240,7 @@ class PlainTextEditor(CodeTextEdit):
         while block.isValid() and top <= event.rect().bottom():
             if block.isVisible() and bottom >= event.rect().top():
                 number = str(block_number + 1)
-                painter.setPen(DARK_BLUE)
+                painter.setPen(QtGui.QColor(118, 150, 185))
                 width = self.line_number_area.width() - 10
                 height = self.fontMetrics().height()
                 painter.drawText(0, int(top), width, height, QtCore.Qt.AlignmentFlag.AlignRight, number)
@@ -260,12 +262,12 @@ class PlainTextEditor(CodeTextEdit):
 
         if rect.contains(self.viewport().rect()):
             self.update_line_number_area_width(0)
-        
+
     def wholeText(self):
         return self.toPlainText()
 
     def selections(self):
-        selectionText =  self.textCursor().selectedText()
+        selectionText = self.textCursor().selectedText()
         contentText = []
 
         # 段落分隔符 (Zp) 替换为换行符

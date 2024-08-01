@@ -1,12 +1,14 @@
+# -*- coding: utf-8 -*-
 from datetime import datetime
 from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtWidgets import  QTabBar, QTableView
+from PyQt5.QtWidgets import QTabBar, QTableView
 from PyQt5.QtCore import Qt, QModelIndex, QAbstractTableModel, QVariant
 
-from src.dbOperator import DBOperator
-from src import dbcat_resource
+from DBCat.dboperator import mysql_operator
+from DBCat import resource as res
 
-class SqlControllEdit():
+
+class SqlControlEdit:
     def __init__(self, tabWidget, sqlMessage):
         self.tabWidget = tabWidget
         self.sqlMessage = sqlMessage
@@ -20,44 +22,46 @@ class SqlControllEdit():
         self.tabWidget.tabBar().setTabButton(0, QTabBar.RightSide, None)
         self.tabWidget.tabBar().setTabButton(1, QTabBar.RightSide, None)
         self.tabWidget.setCurrentIndex(0)
-        self.tabWidget.setTabIcon(0, QIcon(dbcat_resource.resource_path("image/msg.svg")))
-        self.tabWidget.setTabIcon(1, QIcon(dbcat_resource.resource_path("image/result.svg")))
+        self.tabWidget.setTabIcon(0, QIcon(res.resource_path("image/msg.svg")))
+        self.tabWidget.setTabIcon(1, QIcon(res.resource_path("image/result.svg")))
         self.tabWidget.tabCloseRequested.connect(self.tab_close)
 
-        self.icon_table = QIcon(dbcat_resource.resource_path("image/table.svg"))
-        self.icon_index = QIcon(dbcat_resource.resource_path("image/index.svg"))
-    
+        self.icon_table = QIcon(res.resource_path("image/table.svg"))
+        self.icon_index = QIcon(res.resource_path("image/index.svg"))
+
     def tab_close(self, index):
         self.tabWidget.removeTab(index)
 
     def set_msg(self, msg):
         current_time = datetime.now()
-        self.sqlMessage.setPlainText('{}{} {}'.format(current_time.strftime("%H:%M:%S"), ".{:03d}".format(current_time.microsecond // 1000), msg))
+        self.sqlMessage.setPlainText(
+            '{}{} {}'.format(current_time.strftime("%H:%M:%S"), ".{:03d}"
+                             .format(current_time.microsecond // 1000), msg))
         self.tabWidget.setCurrentIndex(0)
 
     def show_index(self, id, db_name, table_name):
-        records, headers = DBOperator().do_exec_statement(id, db_name, 'SHOW INDEX FROM {}'.format(table_name))
+        records, headers = mysql_operator.MysqlOperator().do_exec_statement(id, db_name, 'SHOW INDEX FROM {}'.format(table_name))
         if records is not None:
             self.add_tab(table_name, records, headers, 'INDEX')
         else:
             self.set_msg(headers)
 
     def open_table(self, id, db_name, table_name):
-        records, headers = DBOperator().do_exec_statement(id, db_name, 'SELECT * FROM {}'.format(table_name))
+        records, headers = mysql_operator.MysqlOperator().do_exec_statement(id, db_name, 'SELECT * FROM {}'.format(table_name))
         if records is not None:
             self.add_tab(table_name, records, headers, 'TABLE')
         else:
             self.set_msg(headers)
 
     def add_tab(self, name, records, headers, type):
-        tableWidget = QTableView()
-        self.fill_table_widget(tableWidget, records, headers)
-        index = self.tabWidget.addTab(tableWidget, self.icon_index if type == 'INDEX' else self.icon_table, name)
+        table_view = QTableView()
+        self._fill_table_widget(table_view, records, headers)
+        index = self.tabWidget.addTab(table_view, self.icon_index if type == 'INDEX' else self.icon_table, name)
         self.tabWidget.setCurrentIndex(index)
 
     def exec_sql(self, id, db_name, sql):
         try:
-            records, headers = DBOperator().do_exec_statement(id, db_name, sql)
+            records, headers = mysql_operator.MysqlOperator().do_exec_statement(id, db_name, sql)
             if records is not None:
                 self.set_msg('[exec success]: {}, [result rows]: {}'.format(sql, len(records)))
                 self.fill_result(records, headers)
@@ -68,14 +72,15 @@ class SqlControllEdit():
 
     def fill_result(self, records, headers):
         tableView = self.tabWidget.widget(1)
-        self.fill_table_widget(tableView, records, headers)
+        self._fill_table_widget(tableView, records, headers)
         self.tabWidget.setCurrentIndex(1)
 
-    def fill_table_widget(self, view, records, headers):
+    def _fill_table_widget(self, view, records, headers):
         # 创建模型
         model = MyTableModel(records, headers)
         view.setModel(model)
         view.setSortingEnabled(True)
+
 
 class MyTableModel(QAbstractTableModel):
     def __init__(self, data, header):
@@ -104,4 +109,3 @@ class MyTableModel(QAbstractTableModel):
             elif orientation == Qt.Vertical:
                 return f"{section}"
         return QVariant()
-    

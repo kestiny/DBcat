@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 import json
+from DBCat.hosts import host_info
 
-from src.hostInfo import HostInfo
 
 class Singleton(type):
     _instances = {}
@@ -10,14 +11,17 @@ class Singleton(type):
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
 
+
 # 数组的序列化和反序列化
 def hosts_to_json(hosts):
     """将HostInfo对象数组转换为字典数组"""
     return [p.to_json() for p in hosts]
 
+
 def hosts_from_json(hosts_json):
     """从字典数组构建HostInfo对象数组"""
-    return [HostInfo.from_json(host) for host in hosts_json]
+    return [host_info.HostInfo.from_json(host) for host in hosts_json]
+
 
 class HostOper(metaclass=Singleton):
     def __init__(self, setting_file) -> None:
@@ -32,7 +36,7 @@ class HostOper(metaclass=Singleton):
 
     def get_hosts(self):
         return self.hosts
-    
+
     def find_host(self, id):
         matching_hosts = [host for host in self.hosts if host.id == id]
         return matching_hosts[0] if matching_hosts else None
@@ -45,7 +49,7 @@ class HostOper(metaclass=Singleton):
         self.hosts = sorted(self.hosts, key=lambda x: x.id)
 
         self.save_hosts_to_file()
-    
+
     def update_host(self, new_host):
         matching_hosts = [host for host in self.hosts if host.id == new_host.id]
         target_host = matching_hosts[0] if matching_hosts else None
@@ -55,7 +59,7 @@ class HostOper(metaclass=Singleton):
             target_host.name = new_host.name
             target_host.host = new_host.host
             target_host.port = new_host.port
-            target_host.userName = new_host.userName
+            target_host.userName = new_host.user_name
             target_host.password = new_host.password
             target_host.type = new_host.type
             target_host.environment = new_host.environment

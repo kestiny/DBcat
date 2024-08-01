@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
 from pathlib import Path
 from PyQt5 import QtCore
 
-from src.plainTextEditor import PlainTextEditor
-from src import dbcat_resource
+from DBCat.texteditor import text_editor
+from DBCat import resource as res
 
-class SqlEditor():
+
+class SqlEditor:
     def __init__(self, sqlEditor):
         self.sqlEditor = sqlEditor
         self.sqlEditor.setTabsClosable(True)
@@ -20,24 +22,24 @@ class SqlEditor():
         return self.sqlEditor.currentWidget().selections()
 
     def loadFiles(self):
-        directory_path = dbcat_resource.sql_dir()
+        directory_path = res.sql_dir()
         files_list = [file for file in directory_path.glob('**/*') if file.is_file()]
         return [file for file in files_list if file.suffix == '.sql']
 
     def initSqlEdit(self):
         files = self.loadFiles()
         if len(files) == 0:
-            sqlCode = PlainTextEditor()
+            sqlCode = text_editor.TextEditor()
             self.sqlEditor.addTab(sqlCode, "新建查询")
         else:
             for file in files:
-                sqlCode = PlainTextEditor()
+                sqlCode = text_editor.TextEditor()
                 with open(file, 'r') as fileHandler:
                     sqlCode.setPlainText(fileHandler.read())
                 self.sqlEditor.addTab(sqlCode, Path(file).stem)
 
     def saveFiles(self):
-        directory_path = dbcat_resource.sql_dir()
+        directory_path = res.sql_dir()
         # 获取所有tab页
         for i in range(self.sqlEditor.count()):
             with open(directory_path / (self.sqlEditor.tabText(i) + '.sql'), 'w') as file:
@@ -48,14 +50,14 @@ class SqlEditor():
         if tab_index != -1:
             self.sqlEditor.setCurrentIndex(tab_index)
         else:
-            sqlCode = PlainTextEditor()
+            sqlCode = text_editor.TextEditor()
             self.sqlEditor.addTab(sqlCode, name)
             self.sqlEditor.setCurrentWidget(sqlCode)
 
-    def tabClose(self, index:int):
+    def tabClose(self, index: int):
         name = self.sqlEditor.tabText(index)
         self.sqlEditor.removeTab(index)
-        file = dbcat_resource.sql_dir() / (name + '.sql')
+        file = res.sql_dir() / (name + '.sql')
         # 使用unlink()方法删除文件， unlink(missing_ok=True) 可以避免 FileNotFoundError 异常
         try:
             file.unlink(missing_ok=True)
