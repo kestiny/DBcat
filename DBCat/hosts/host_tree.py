@@ -39,6 +39,9 @@ class HostTree:
         self.init_menu()
 
     def exec_sql(self, sql_statement, high_risk_operator):
+        if not sql_statement:
+            return
+
         item = self.sql_tree_widget.currentItem()
         if item is not None:
             node_type = self.getItemType(item)
