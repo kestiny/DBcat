@@ -22,13 +22,13 @@ class MysqlOperator(metaclass=Singleton):
             if connection.is_connected():
                 connection.close()
 
-    def release_connection(self, id):
-        connection = self.__conns.pop(id)
+    def release_connection(self, host_id):
+        connection = self.__conns.pop(host_id)
         if connection is not None and connection.is_connected():
             connection.close()
 
-    def do_exec_statement(self, id, database, sql):
-        connection = self.__conns.get(id)
+    def do_exec_statement(self, host_id, database, sql):
+        connection = self.get_database(host_id)
         if connection is None:
             return None, "error: 未找到数据库链接"
         if connection.is_connected():
@@ -49,10 +49,10 @@ class MysqlOperator(metaclass=Singleton):
             finally:
                 cursor.close()
         else:
-            return None, "error: 数据库链接未打开"
+            return None, "error: 数据库链接未打开,请重新连接"
 
     def database(self, host_info):
-        connection = self.__conns.get(host_info.id, None)
+        connection = self.get_database(host_info.id)
         if connection is None or connection.is_connected() == False:
             connection, msg = self.connection(host_info)
             if connection is None:
@@ -68,10 +68,10 @@ class MysqlOperator(metaclass=Singleton):
                 cursor.close()
         return None, 'failure'
 
-    def tables(self, id, database):
-        connection = self.__conns.get(id, None)
-        if connection is None or connection.is_connected() == False:
-            return None, 'error: 数据库链接未打开'
+    def tables(self, host_id, database):
+        connection = self.get_database(host_id)
+        if connection is None or not connection.is_connected():
+            return None, 'error: 数据库链接未打开,请重新连接'
 
         if connection is not None:
             try:
@@ -82,7 +82,7 @@ class MysqlOperator(metaclass=Singleton):
                 return [record[0] for record in records], ''
             finally:
                 cursor.close()
-        return None, 'error: 数据库链接未打开'
+        return None, 'error: 数据库链接未打开,请重新连接'
 
     def connection(self, host_info):
         if host_info is not None:
@@ -105,3 +105,12 @@ class MysqlOperator(metaclass=Singleton):
             except Error as e:
                 msg = "Error while connecting to MySQL:{}, {}".format(host_info.host, e)
                 return None, msg
+
+    def get_database(self, host_id):
+        connection = self.__conns.get(host_id, None)
+        if connection is not None and not connection.is_connected():
+            # 尝试重新连接
+            connection.reconnect(attempts=3, delay=0)
+            print("数据库连接已失效，将重新连接")
+
+        return connection
