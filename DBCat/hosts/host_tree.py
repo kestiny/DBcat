@@ -48,6 +48,7 @@ class HostTree:
             elif node_type == HostTree.TABLE:
                 database = item.parent().text(0)
 
+        if high_risk_operator:
             is_production, name = HostTree.is_production_env(item)
             if is_production:
                 text, ok = QInputDialog.getText(self.sql_tree_widget,
@@ -65,6 +66,8 @@ class HostTree:
                                             QMessageBox.Yes)
             else:
                 self.sql_control_widget.exec_sql(self.getItemHostId(item), database, sql_statement)
+        else:
+            self.sql_control_widget.exec_sql(self.getItemHostId(item), database, sql_statement)
 
     @staticmethod
     def is_production_env(item):
