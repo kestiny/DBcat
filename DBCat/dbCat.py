@@ -117,8 +117,9 @@ class DBCat(QtWidgets.QMainWindow):
         self.sqlHostTreeWidget = host_tree.HostTree(self.hostWidget, self.sqlControllEdit)
 
     def do_exec_sql(self):
-        sql = self.sqlTabEdit.selections()
-        self.sqlHostTreeWidget.exec_sql(sql)
+        """执行SQL语句查询"""
+        sql_statement, high_risk_operator = self.sqlTabEdit.selections()
+        self.sqlHostTreeWidget.exec_sql(sql_statement, high_risk_operator)
 
     def retranslateUi(self, DBcat):
         _translate = QtCore.QCoreApplication.translate

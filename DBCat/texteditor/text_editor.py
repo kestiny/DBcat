@@ -267,12 +267,12 @@ class TextEditor(CodeTextEdit):
         return self.toPlainText()
 
     def selections(self):
-        selectionText = self.textCursor().selectedText()
-        contentText = []
+        selection_text = self.textCursor().selectedText()
+        content_text = []
 
         # 段落分隔符 (Zp) 替换为换行符
         result = ""
-        for char in selectionText:
+        for char in selection_text:
             if unicodedata.category(char) == 'Zp':
                 result += '\n'
             else:
@@ -283,5 +283,13 @@ class TextEditor(CodeTextEdit):
             if not text or self.sqlHighlighter.is_comment(text):
                 continue
             else:
-                contentText.append(text)
-        return ' '.join(contentText)
+                content_text.append(text)
+
+        # 拼接最终结果
+        result_text = ' '.join(content_text)
+
+        # 判断是否含有高危操作
+        high_risk_exp = QtCore.QRegularExpression("(delete|drop|alter)\\s*",
+                                                  QtCore.QRegularExpression.CaseInsensitiveOption)
+        match = high_risk_exp.match(result_text)
+        return result_text, True if match.hasMatch() else False

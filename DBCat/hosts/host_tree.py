@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtWidgets import QTreeWidgetItem, QMenu, QDialog, QMessageBox
+from PyQt5.QtWidgets import QTreeWidgetItem, QMenu, QDialog, QMessageBox, QInputDialog
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QCursor, QFont
 
@@ -38,7 +38,7 @@ class HostTree:
         self.init_host()
         self.init_menu()
 
-    def exec_sql(self, sql):
+    def exec_sql(self, sql_statement, high_risk_operator):
         item = self.sql_tree_widget.currentItem()
         if item is not None:
             node_type = self.getItemType(item)
@@ -47,7 +47,48 @@ class HostTree:
                 database = item.text(0)
             elif node_type == HostTree.TABLE:
                 database = item.parent().text(0)
-            self.sql_control_widget.exec_sql(self.getItemHostId(item), database, sql)
+
+            is_production, name = HostTree.is_production_env(item)
+            if is_production:
+                text, ok = QInputDialog.getText(self.sql_tree_widget,
+                                                '数据更改警告',
+                                                '高危操作-数据变更\n\n生产数据库[{}]\n\n'
+                                                '若要继续，请输入连接名称：'.format(name))
+                # 如果用户点击OK
+                if ok:
+                    if text == name:
+                        self.sql_control_widget.exec_sql(self.getItemHostId(item), database, sql_statement)
+                    else:
+                        QMessageBox.warning(self.sql_tree_widget, "警告",
+                                            "您输入的连接名称：{} 与实际名称不匹配，\n操作将终止!".format(text),
+                                            QMessageBox.Yes,
+                                            QMessageBox.Yes)
+            else:
+                self.sql_control_widget.exec_sql(self.getItemHostId(item), database, sql_statement)
+
+    @staticmethod
+    def is_production_env(item):
+        """判断当前数据库是否为生产环境"""
+        if item is not None:
+            while item.parent() is not None:
+                item = item.parent()
+
+            label_name = item.text(0)
+            last_open_bracket = label_name.rfind('[')
+            last_close_bracket = label_name.rfind(']')
+
+            # 确保找到的括号是有效的
+            if last_open_bracket == -1 or last_close_bracket == -1 or last_open_bracket >= last_close_bracket:
+                return False, ''
+
+            # 分割字符串
+            part_in_brackets = label_name[last_open_bracket + 1 :last_close_bracket]
+            if part_in_brackets == "生产":
+                return True, label_name[:last_open_bracket]
+            else:
+                return False, label_name[:last_open_bracket]
+
+        return False, ''
 
     def add_host(self, host):
         # 先存储到文件
