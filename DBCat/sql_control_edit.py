@@ -2,7 +2,7 @@
 from datetime import datetime
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtWidgets import QTabBar, QTableView
-from PyQt5.QtCore import Qt, QModelIndex, QAbstractTableModel, QVariant
+from PyQt5.QtCore import Qt, QModelIndex, QAbstractTableModel, QVariant, QSortFilterProxyModel
 
 from DBCat.dboperator import mysql_operator
 from DBCat import resource as res
@@ -55,7 +55,7 @@ class SqlControlEdit:
 
     def add_tab(self, name, records, headers, type):
         table_view = QTableView()
-        self._fill_table_widget(table_view, records, headers)
+        self.__fill_table_widget(table_view, records, headers)
         index = self.tabWidget.addTab(table_view, self.icon_index if type == 'INDEX' else self.icon_table, name)
         self.tabWidget.setCurrentIndex(index)
 
@@ -72,13 +72,15 @@ class SqlControlEdit:
 
     def fill_result(self, records, headers):
         tableView = self.tabWidget.widget(1)
-        self._fill_table_widget(tableView, records, headers)
+        self.__fill_table_widget(tableView, records, headers)
         self.tabWidget.setCurrentIndex(1)
 
-    def _fill_table_widget(self, view, records, headers):
+    def __fill_table_widget(self, view, records, headers):
         # 创建模型
         model = MyTableModel(records, headers)
-        view.setModel(model)
+        proxy_model = QSortFilterProxyModel()
+        proxy_model.setSourceModel(model)
+        view.setModel(proxy_model)
         view.setSortingEnabled(True)
 
 
