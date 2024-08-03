@@ -257,7 +257,8 @@ class HostTree:
         count = item.childCount()
         node_type = self.getItemType(item)
         for act in self.contextMenu.actions():
-            act.setVisible(False)  #先隐藏所有菜单
+            act.setVisible(False)  # 先隐藏所有菜单
+            act.setDisabled(False)
 
         if node_type == HostTree.HOST:
             self.actEditConn.setVisible(True)
@@ -266,13 +267,17 @@ class HostTree:
                 self.actCloseConn.setVisible(True)
         elif node_type == HostTree.DATABASE:
             self.actCreateDB.setVisible(True)
-            self.actDropDB.setVisible(True)
+            # self.actDropDB.setVisible(True)
             if count > 0:
                 self.actCloseDB.setVisible(True)
         elif node_type == HostTree.TABLE:
             self.actIndexTable.setVisible(True)
             self.actDeleteData.setVisible(True)
             self.actDropTable.setVisible(True)
+            production, _ = HostTree.is_production_env(item)
+            if production:
+                self.actDeleteData.setDisabled(True)
+                self.actDropTable.setDisabled(True)
         elif node_type == HostTree.INDEX:
             pass
 
