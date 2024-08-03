@@ -45,6 +45,7 @@ class MysqlOperator(metaclass=Singleton):
                 else:
                     # 如果不是 SELECT 查询，则获取受影响的行数
                     affected_rows = cursor.rowcount
+                    connection.commit()
                     return None, f"Query executed successfully. Affected rows: {affected_rows}"
             finally:
                 cursor.close()
