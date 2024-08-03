@@ -42,7 +42,6 @@ class HostOper(metaclass=Singleton):
         return matching_hosts[0] if matching_hosts else None
 
     def add_host(self, new_host):
-        print("add host by {}".format(new_host.to_json()))
         id = self.hosts[-1].id if len(self.hosts) > 0 else 100
         new_host.id = id + 1
         self.hosts.append(new_host)
@@ -55,7 +54,6 @@ class HostOper(metaclass=Singleton):
         target_host = matching_hosts[0] if matching_hosts else None
         if target_host is not None:
             # update
-            print("update host by {}".format(new_host.to_json()))
             target_host.name = new_host.name
             target_host.host = new_host.host
             target_host.port = new_host.port
@@ -69,11 +67,9 @@ class HostOper(metaclass=Singleton):
             self.add_host(new_host)
 
     def del_host(self, id):
-        print("delete host by id {}".format(id))
         self.hosts = [host for host in self.hosts if host.id != id]
         self.save_hosts_to_file()
 
     def save_hosts_to_file(self):
-        print("save_hosts_to_file")
         with open(self.dbcat_setting_file, 'w') as file:
             json.dump(hosts_to_json(self.hosts), file)

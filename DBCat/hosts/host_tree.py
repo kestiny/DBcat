@@ -292,8 +292,9 @@ class HostTree:
                 # 打开连接
                 databases, msg = mysql_operator.MysqlOperator().database(self.getItemHost(item))
                 self.sql_control_widget.set_msg('connect to:{} {}'.format(item.text(0), msg))
-                for db in databases:
-                    item.addChild(self.create_child_item(db, host_id, HostTree.DATABASE))
+                if databases is not None:
+                    for db in databases:
+                        item.addChild(self.create_child_item(db, host_id, HostTree.DATABASE))
             elif node_type == HostTree.DATABASE and child_count == 0:
                 # 查询数据库表
                 tables, msg = mysql_operator.MysqlOperator().tables(host_id, item.text(0))

@@ -14,7 +14,6 @@ class HostEditDialog(QtWidgets.QDialog):
                                  self.password.text(), self.type.text(), self.env.currentText())
 
     def init_with_host(self, host):
-        print('init dialog with host:{}'.format(host.to_json()))
         self.id = host.id
         self.name.setText(host.name)
         self.host.setText(host.host)
