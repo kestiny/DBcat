@@ -197,7 +197,7 @@ class HostTree:
         item = self.sql_tree_widget.currentItem()
         if self.getItemType(item) == HostTree.HOST:
             item.takeChildren()
-            mysql_operator.MysqlOperator().release_connection(self.getItemHost(item))
+            mysql_operator.MysqlOperator().release_connection(self.getItemHostId(item))
 
     def close_database(self):
         item = self.sql_tree_widget.currentItem()
