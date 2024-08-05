@@ -50,3 +50,4 @@ requirements.txt.lock
 # 忽略PyInstaller生成的大量文件
 build/
 dist/
+docs/images/
