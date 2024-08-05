@@ -71,8 +71,9 @@ class SqlControlEdit:
             self.set_msg(f'[ERROR]: {e}')
 
     def fill_result(self, records, headers):
-        tableView = self.tabWidget.widget(1)
-        self.__fill_table_widget(tableView, records, headers)
+        table_view = self.tabWidget.widget(1)
+        table_view.reset()
+        self.__fill_table_widget(table_view, records, headers)
         self.tabWidget.setCurrentIndex(1)
 
     def __fill_table_widget(self, view, records, headers):
