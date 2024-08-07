@@ -32,8 +32,8 @@ class MysqlOperator(metaclass=Singleton):
         if connection is None:
             return None, "error: 未找到数据库链接"
         if connection.is_connected():
+            cursor = connection.cursor()
             try:
-                cursor = connection.cursor()
                 if database:
                     cursor.execute("USE {}".format(database))
                 cursor.execute(sql)
@@ -41,6 +41,7 @@ class MysqlOperator(metaclass=Singleton):
                     # 处理查询结果
                     records = cursor.fetchall()
                     description = cursor.description
+                    connection.commit()
                     return records, [desc[0] for desc in description]
                 else:
                     # 如果不是 SELECT 查询，则获取受影响的行数
@@ -60,8 +61,8 @@ class MysqlOperator(metaclass=Singleton):
                 return None, msg
 
         if connection is not None:
+            cursor = connection.cursor()
             try:
-                cursor = connection.cursor()
                 cursor.execute("SHOW DATABASES")
                 records = cursor.fetchall()
                 return [record[0] for record in records], ''
@@ -75,8 +76,8 @@ class MysqlOperator(metaclass=Singleton):
             return None, 'error: 数据库链接未打开,请重新连接'
 
         if connection is not None:
+            cursor = connection.cursor()
             try:
-                cursor = connection.cursor()
                 cursor.execute("USE {}".format(database))
                 cursor.execute('SHOW TABLES')
                 records = cursor.fetchall()
