@@ -142,3 +142,7 @@ class DBCat(QtWidgets.QMainWindow):
         dialog = host_edit_dialog.HostEditDialog()
         if QtWidgets.QDialog.Accepted == dialog.exec():
             self.sqlHostTreeWidget.add_host(dialog.get_host())
+
+    def keyReleaseEvent(self, event):
+        if event.key() == QtCore.Qt.Key.Key_C and event.modifiers() == QtCore.Qt.KeyboardModifier.ControlModifier:
+            self.sqlControllEdit.copy_data()
