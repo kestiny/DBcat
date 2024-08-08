@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtWidgets import QTabBar, QTableView, QApplication, QAbstractItemView
 from PyQt5.QtCore import Qt, QModelIndex, QAbstractTableModel, QVariant, QSortFilterProxyModel
@@ -86,40 +87,48 @@ class SqlControlEdit:
         view.setSelectionMode(QAbstractItemView.ContiguousSelection)
 
     def copy_data(self):
+        with ThreadPoolExecutor(max_workers=1) as executor:
+            executor.submit(self.do_copy_data).add_done_callback(SqlControlEdit.copy_to_clipboard)
+
+    @staticmethod
+    def copy_to_clipboard(future):
+        try:
+            result = future.result()
+            clipboard = QApplication.clipboard()
+            clipboard.setText(result)
+        except Exception as e:
+            print(f"Exception occurred: {e}")
+
+    def do_copy_data(self):
         table_view = self.tabWidget.currentWidget()
-        copy_data(table_view)
+        selected_ranges = table_view.selectedIndexes()
+        indexes_dict = {}
+        proxy_model = table_view.model()
+        for index in selected_ranges:  # 遍历每个单元格
+            real_index = proxy_model.mapToSource(index)
+            row, column = real_index.row(), real_index.column()  # 获取单元格的行号，列号
+            if row in indexes_dict.keys():
+                indexes_dict[row].append(column)
+            else:
+                indexes_dict[row] = [column]
 
+        text = []
+        head_columns = []
+        for row, columns in indexes_dict.items():
+            row_data = []
+            head_columns = columns
+            for column in columns:
+                data = table_view.model().sourceModel().item_data(row, column)
+                row_data.append(data)
 
-def copy_data(table_view):
-    selected_ranges = table_view.selectedIndexes()
-    indexes_dict = {}
-    proxy_model = table_view.model()
-    for index in selected_ranges:  # 遍历每个单元格
-        real_index = proxy_model.mapToSource(index)
-        row, column = real_index.row(), real_index.column()  # 获取单元格的行号，列号
-        if row in indexes_dict.keys():
-            indexes_dict[row].append(column)
-        else:
-            indexes_dict[row] = [column]
+            text.append('\t'.join(row_data))
 
-    text = []
-    head_columns = []
-    for row, columns in indexes_dict.items():
-        row_data = []
-        head_columns = columns
-        for column in columns:
-            data = table_view.model().sourceModel().item_data(row, column)
-            row_data.append(data)
+        heads = []
+        for column in head_columns:
+            data = table_view.model().sourceModel().item_head(column)
+            heads.append(data)
 
-        text.append('\t'.join(row_data))
-
-    heads = []
-    for column in head_columns:
-        data = table_view.model().sourceModel().item_head(column)
-        heads.append(data)
-
-    clipboard = QApplication.clipboard()
-    clipboard.setText('\t'.join(heads) + '\n' + '\n'.join(text))
+        return '\t'.join(heads) + '\n' + '\n'.join(text)
 
 
 class MyTableModel(QAbstractTableModel):
