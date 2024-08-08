@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtWidgets import QTabBar, QTableView
+from PyQt5.QtWidgets import QTabBar, QTableView, QApplication, QAbstractItemView
 from PyQt5.QtCore import Qt, QModelIndex, QAbstractTableModel, QVariant, QSortFilterProxyModel
 
 from DBCat.dboperator import mysql_operator
@@ -83,6 +83,43 @@ class SqlControlEdit:
         proxy_model.setSourceModel(model)
         view.setModel(proxy_model)
         view.setSortingEnabled(True)
+        view.setSelectionMode(QAbstractItemView.ContiguousSelection)
+
+    def copy_data(self):
+        table_view = self.tabWidget.currentWidget()
+        copy_data(table_view)
+
+
+def copy_data(table_view):
+    selected_ranges = table_view.selectedIndexes()
+    indexes_dict = {}
+    proxy_model = table_view.model()
+    for index in selected_ranges:  # 遍历每个单元格
+        real_index = proxy_model.mapToSource(index)
+        row, column = real_index.row(), real_index.column()  # 获取单元格的行号，列号
+        if row in indexes_dict.keys():
+            indexes_dict[row].append(column)
+        else:
+            indexes_dict[row] = [column]
+
+    text = []
+    head_columns = []
+    for row, columns in indexes_dict.items():
+        row_data = []
+        head_columns = columns
+        for column in columns:
+            data = table_view.model().sourceModel().item_data(row, column)
+            row_data.append(data)
+
+        text.append('\t'.join(row_data))
+
+    heads = []
+    for column in head_columns:
+        data = table_view.model().sourceModel().item_head(column)
+        heads.append(data)
+
+    clipboard = QApplication.clipboard()
+    clipboard.setText('\t'.join(heads) + '\n' + '\n'.join(text))
 
 
 class MyTableModel(QAbstractTableModel):
@@ -104,6 +141,12 @@ class MyTableModel(QAbstractTableModel):
             return '' if not self._data[row][col] else str(self._data[row][col])
 
         return QVariant()
+
+    def item_data(self, row, col):
+        return '' if not self._data[row][col] else str(self._data[row][col])
+
+    def item_head(self, col):
+        return self._header[col]
 
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         if role == Qt.DisplayRole:
