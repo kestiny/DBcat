@@ -1,23 +1,19 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
-from concurrent.futures import ThreadPoolExecutor
 from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtWidgets import QTabBar, QTableView, QApplication, QAbstractItemView
+from PyQt5.QtWidgets import QTabWidget, QTabBar, QTableView, QApplication, QAbstractItemView
 from PyQt5.QtCore import Qt, QModelIndex, QAbstractTableModel, QVariant, QSortFilterProxyModel
 
 from DBCat.dboperator import mysql_operator
 from DBCat import resource as res
+from DBCat.component import sqlTableView
 
 
 class SqlControlEdit:
-    def __init__(self, tabWidget, sqlMessage):
+    def __init__(self, tabWidget):
+        super().__init__()
+        self.sqlMessage = None
         self.tabWidget = tabWidget
-        self.sqlMessage = sqlMessage
-        font = QFont()
-        font.setFamily("Courier New")
-        font.setStyleHint(QFont.Monospace)
-        font.setPointSize(12)
-        self.sqlMessage.setFont(font)
 
         self.tabWidget.setTabsClosable(True)
         self.tabWidget.tabBar().setTabButton(0, QTabBar.RightSide, None)
@@ -29,6 +25,14 @@ class SqlControlEdit:
 
         self.icon_table = QIcon(res.resource_path("image/table.svg"))
         self.icon_index = QIcon(res.resource_path("image/index.svg"))
+
+    def init_message(self, sqlMessage):
+        self.sqlMessage = sqlMessage
+        font = QFont()
+        font.setFamily("Courier New")
+        font.setStyleHint(QFont.Monospace)
+        font.setPointSize(12)
+        self.sqlMessage.setFont(font)
 
     def tab_close(self, index):
         self.tabWidget.removeTab(index)
@@ -55,7 +59,7 @@ class SqlControlEdit:
             self.set_msg(headers)
 
     def add_tab(self, name, records, headers, type):
-        table_view = QTableView()
+        table_view = sqlTableView.SqlTableView()
         self.__fill_table_widget(table_view, records, headers)
         index = self.tabWidget.addTab(table_view, self.icon_index if type == 'INDEX' else self.icon_table, name)
         self.tabWidget.setCurrentIndex(index)
@@ -85,50 +89,6 @@ class SqlControlEdit:
         view.setModel(proxy_model)
         view.setSortingEnabled(True)
         view.setSelectionMode(QAbstractItemView.ContiguousSelection)
-
-    def copy_data(self):
-        with ThreadPoolExecutor(max_workers=1) as executor:
-            executor.submit(self.do_copy_data).add_done_callback(SqlControlEdit.copy_to_clipboard)
-
-    @staticmethod
-    def copy_to_clipboard(future):
-        try:
-            result = future.result()
-            clipboard = QApplication.clipboard()
-            clipboard.setText(result)
-        except Exception as e:
-            print(f"Exception occurred: {e}")
-
-    def do_copy_data(self):
-        table_view = self.tabWidget.currentWidget()
-        selected_ranges = table_view.selectedIndexes()
-        indexes_dict = {}
-        proxy_model = table_view.model()
-        for index in selected_ranges:  # 遍历每个单元格
-            real_index = proxy_model.mapToSource(index)
-            row, column = real_index.row(), real_index.column()  # 获取单元格的行号，列号
-            if row in indexes_dict.keys():
-                indexes_dict[row].append(column)
-            else:
-                indexes_dict[row] = [column]
-
-        text = []
-        head_columns = []
-        for row, columns in indexes_dict.items():
-            row_data = []
-            head_columns = columns
-            for column in columns:
-                data = table_view.model().sourceModel().item_data(row, column)
-                row_data.append(data)
-
-            text.append('\t'.join(row_data))
-
-        heads = []
-        for column in head_columns:
-            data = table_view.model().sourceModel().item_head(column)
-            heads.append(data)
-
-        return '\t'.join(heads) + '\n' + '\n'.join(text)
 
 
 class MyTableModel(QAbstractTableModel):
