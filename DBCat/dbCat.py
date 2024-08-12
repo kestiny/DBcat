@@ -7,7 +7,7 @@ from DBCat.hosts import host_edit_dialog
 from DBCat import sql_control_edit
 from DBCat.dboperator import mysql_operator
 from DBCat import resource as res
-
+from DBCat.component import sqlTableView
 
 class DBCat(QtWidgets.QMainWindow):
     """主窗口"""
@@ -80,7 +80,7 @@ class DBCat(QtWidgets.QMainWindow):
         self.textEditMessage.setObjectName("textEditMessage")
         self.verticalLayout_4.addWidget(self.textEditMessage)
         self.sqlControll.addTab(self.tabMessage, "")
-        self.tab_2 = QtWidgets.QTableView()
+        self.tab_2 = sqlTableView.SqlTableView()
         self.tab_2.setObjectName("tab_2")
         self.sqlControll.addTab(self.tab_2, "")
         self.horizontalLayout.addWidget(self.splitter_2)
@@ -113,7 +113,8 @@ class DBCat(QtWidgets.QMainWindow):
 
         # 初始化sql代码编辑器
         self.sqlTabEdit = sql_editor.SqlEditor(self.sqlEdit)
-        self.sqlControllEdit = sql_control_edit.SqlControlEdit(self.sqlControll, self.textEditMessage)
+        self.sqlControllEdit = sql_control_edit.SqlControlEdit(self.sqlControll)
+        self.sqlControllEdit.init_message(self.textEditMessage)
         self.sqlHostTreeWidget = host_tree.HostTree(self.hostWidget, self.sqlControllEdit)
 
     def do_exec_sql(self):
@@ -142,7 +143,3 @@ class DBCat(QtWidgets.QMainWindow):
         dialog = host_edit_dialog.HostEditDialog()
         if QtWidgets.QDialog.Accepted == dialog.exec():
             self.sqlHostTreeWidget.add_host(dialog.get_host())
-
-    def keyReleaseEvent(self, event):
-        if event.key() == QtCore.Qt.Key.Key_C and event.modifiers() == QtCore.Qt.KeyboardModifier.ControlModifier:
-            self.sqlControllEdit.copy_data()
