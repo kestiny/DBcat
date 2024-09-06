@@ -184,6 +184,7 @@ class HostTree:
             if QDialog.Accepted == dialog.exec():
                 host = dialog.get_host()
                 self.host_oper.update_host(host)
+                self.setItemHost(item, host)
                 item.setText(0, '{}[{}]'.format(host.name, host.environment))
 
     def del_conn(self):
