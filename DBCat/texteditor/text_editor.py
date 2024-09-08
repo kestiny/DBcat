@@ -215,6 +215,20 @@ class TextEditor(CodeTextEdit):
         rect = QtCore.QRect(cr.left(), cr.top(), width, cr.height())
         self.line_number_area.setGeometry(rect)
 
+    def keyReleaseEvent(self, event):
+        if event.key() == QtCore.Qt.Key.Key_F and event.modifiers() == QtCore.Qt.KeyboardModifier.ControlModifier:
+            search_text, ok = QtWidgets.QInputDialog.getText(self, 'Find', 'Enter text to find:')
+            if ok and search_text:
+                self.find_text(search_text)
+
+    def find_text(self, text_to_find):
+        text_cursor = self.textCursor()
+        text_cursor = self.document().find(text_to_find, text_cursor)
+        if not text_cursor.isNull():
+            self.setTextCursor(text_cursor)
+        else:
+            QtWidgets.QMessageBox.information(self, 'Not Found', 'Text not found.')
+
     def highlightCurrentLine(self):
         extra_selections = list()
 
